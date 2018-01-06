@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Nest of Owl">
+    <title>Statefull and security (日本語訳) - Nest of Owl</title>
+    <meta name="author" content="Owl">
+    
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <meta name="description" content="※赤字は追加で解説，資料等記載します。 ステートフルとセキュリティQRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレットで使用され">
+<meta name="keywords" content="QRL">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Statefull and security (日本語訳)">
+<meta property="og:url" content="http://yoursite.com/2018/01/06/Statefullness-and-security-ja/index.html">
+<meta property="og:site_name" content="Nest of Owl">
+<meta property="og:description" content="※赤字は追加で解説，資料等記載します。 ステートフルとセキュリティQRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレットで使用され">
+<meta property="og:locale" content="ja">
+<meta property="og:updated_time" content="2018-01-06T07:55:18.670Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Statefull and security (日本語訳)">
+<meta name="twitter:description" content="※赤字は追加で解説，資料等記載します。 ステートフルとセキュリティQRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレットで使用され">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Nest of Owl</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="ホーム"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">ホーム</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="カテゴリー"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">カテゴリー</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="タグ"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">タグ</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="アーカイブ"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">アーカイブ</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="プロフィール"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">プロフィール</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/converghub" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://twitter.com/owl_alt" target="_blank" rel="noopener" title="Twitter">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/atom.xml"
+                            
+                            title="RSS"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post" itemscope itemType="http://schema.org/BlogPosting">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title" itemprop="headline">
+            Statefull and security (日本語訳)
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time itemprop="datePublished" datetime="2018-01-06T16:48:39+09:00">
+	
+		    2018/01/06
+    	
+    </time>
+    
+        <span>カテゴリー </span>
+        
+    <a class="category-link" href="/categories/暗号通貨/">暗号通貨</a>
+
+
+    
+</div>
+
+    
+</div>
+    
+    <div class="post-content markdown" itemprop="articleBody">
+        <div class="main-content-wrap">
+            <p><span style="color: #ff0000">※赤字は追加で解説，資料等記載します。<br></span></p>
+<h1 id="ステートフルとセキュリティ"><a href="#ステートフルとセキュリティ" class="headerlink" title="ステートフルとセキュリティ"></a>ステートフルとセキュリティ</h1><p>QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。<br><br><span style="color: #ff0000">（論文は次を参照ください。<a href="https://eprint.iacr.org/2011/484.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2011/484.pdf</a> ）<br></span></p>
+<p>トランザクションがQRLのアドレスから署名されるたびに，<i>Winternitz OTS+</i>ワンタイム署名がXMSSウォレットで使用されます。</p>
+<p>同一のワンタイム署名から再度署名（=同一のXMSS木のインデックスを再利用）し，有効な署名でトランザクションを作成することは可能です。一方で，ブロックが追加されたときルーチンの状態検証中にワンタイム署名の再利用を禁止するため，QRLのネットワークではこのトランザクションを拒否します。</p>
+<p>しかしながら，同一のワンタイム署名のインデックスを再利用しつづける場合，XMSSのセキュリティは徐々に低下します。</p>
+<p>理論的には，同一の木のインデックスから複数の署名と十分な時間があれば，ワンタイム署名の秘密鍵を推測することが可能です。</p>
+<p>署名が2つの場合は2<sup>34</sup>，3つの場合2<sup>23</sup>，4つの場合2<sup>18</sup>のハッシュが必要になります。</p>
+<p>明らかに，XMSSのこのステートフルなセキュリティの側面は，安全に使用できる実際の状況がほとんどないことを意味しています。その理由は，署名者（ウォレット）が同一のインデックスに繰り返し署名し，ウォレットのXMSS木の秘密鍵を危険にさらすことを許容することが絶対に致命的であるからです。</p>
+<p>それゆえに，新しい状態とインクリメントされた木のインデックスを反映させるために，各々の署名のあとにウォレットファイルは更新されなければなりません。ウォレットが同一のインデックスから署名してる限りは，すべて問題ありません。</p>
+<h1 id="QRLのウェブウォレット"><a href="#QRLのウェブウォレット" class="headerlink" title="QRLのウェブウォレット"></a>QRLのウェブウォレット</h1><p>シンプルです。ウォレットファイルでqrlcoreを利用している場合や，のちにすべてを安全に保存するためにLedger Nanoを使用する場合は，すべてが自動的に処理されます。</p>
+<p>しかし，古いウォレットファイルをバックアップから復元するとどうなるでしょうか？またはウォレットファイル無しのウォレットがある場合は？</p>
+<p>私たちのウェブウォレットは現在機能しており（ <a href="https://wallet.qrlexplorer.info/" target="_blank" rel="noopener">https://wallet.qrlexplorer.info/</a> ），これはニーモニックフレーズまたはhexseedで開かれます。<br><br><span style="color: #ff0000">（2017/12/20時点で，これはTestnet用のウェブウォレットです。BittrexでトレードされているQRLトークンはERC20トークンでありますので，このウェブウォレットは利用できません。メインネットをお待ちください）</span></p>
+<p>1つのオプションとしては，各セッションの後にユーザーに対してウォレット・インデックス番号を覚えてもらうことを頼むことです。 しかし，これはユーザーが覚えた後で思い出すことに依存するので，問題が発生しやすくなります。 自分のウェブウォレットにアクセスすることがまれである場合，または単にウォレット・インデックスを忘れた場合，システムは失敗します。</p>
+<p>しかし私たちは運がいいです。QRLのブロックチェーンは助けてくれます。</p>
+<p>すでにチェーン内にあるXMSSインデックスはバーンされたと考えることができます。潜在的に，有効なXMSSインデックスは，まだトランザクションを署名するために使用されていないものです。ウェブウォレットがQRLのネットワークに接続すると，QRLのアドレスのトランザクション履歴をロードし，送信されたトランザクション数を使用して現在のXMSS木インデックスを計算します。<br><br><span style="color: #ff0000">（XMSSの構造上ウォレットファイルは更新され続けなければなりません。それが何らかの破損をしても救助できるということであり，ウォレットのニーモニックフレーズ自体はしっかり保存してください）</span></p>
+<p>ウェブウォレットブラウザのインスタンスとQRLのP2Pネットワーク間で中間者攻撃をしようとする悪意のあるノードによって，ウェブウォレットが欺かれることがあるでしょうか？</p>
+<p>ウェブウォレットは，自分のアドレスの履歴にある各トランザクションを簡単に検証できます。悪意のあるノードが行うことができるのは，ウェブウォレットが正しくない誤った低いインデックスで署名するよう混乱させるために，極めて少ないトランザクションを送信させることくらいです。そのインデックス位置でのワンタイム署名がすでにQRLネットワークでブラックリスト化されますので，これは何も達成することができません。悪意のあるノードは，期待より高いインデックスから署名させるようウェブウォレットを欺くトランザクションを偽造することはできません。そうする正当な署名を生成することができないからです。</p>
+<p>ここまでは順調ですね。</p>
+<p>現在のインデックスから秘密鍵を危険にさらすのに十分な回数署名するよう，ウェブウオレットを欺くため，悪意のあるノードが意図的にトランザクションを伝播できないようにすることは可能でしょうか？</p>
+<p>私たちのウェブウォレットは，トランザクションを複数のノードに伝播することによってこの可能性を緩和します。 さらに，別のランダムなノードからメモリプール・ブロック内のtxを見るまで，再びアクティブセッションで再度署名することはありません。</p>
+<h1 id="NIST"><a href="#NIST" class="headerlink" title="NIST"></a>NIST</h1><p>しばらくの間，プレースホルダーのエフェメラルメッセージルーチンがin-situで実行されました。 私たちのend-endポスト量子セキュア・データ・チャネルは，両端に2つの公開鍵を含む<i>EPH</i>トランザクションによってリンクされています。これを分散格子公開鍵サーバと考えてください。 現在，それらは<i>ECC</i>公開鍵であり，一つは署名用でもう一つは暗号化用です。 しかし，NISTがリリース（そう長くない）するとすぐに，私たちは署名用の<i>dilithium</i>鍵と、エフェメラルなトラフィックを格子暗号化するための<i>kyber</i>鍵を用意します。<br><br><span style="color: #ff0000">（dilithiumの論文：<br><a href="https://eprint.iacr.org/2017/633.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2017/633.pdf</a><br><br><br>kyberの論文：<br><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2017/634.pdf</a> ）</span></p>
+<h1 id="お知らせ"><a href="#お知らせ" class="headerlink" title="お知らせ"></a>お知らせ</h1><p>今月下旬に発表する新しいメンバー変更と，ロードマップとタイムラインの両方に（とても興奮する）大きな変化があります！<br><br><br><br></p>
+<p><span style="color: #ff0000">以上，翻訳でした。<br><br>（個人的な予想ですが，おそらくお知らせはパブリックテストネットの段階から次の段階へ移行する旨の発表ではないのかなと考えています）</span></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">タグ</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/QRL/">QRL</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Get-ready-for-qrl-launch-ja/" data-tooltip="Get ready for QRL launch! (日本語訳)" aria-label="前: Get ready for QRL launch! (日本語訳)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">前</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/引っ越しのお知らせ/" data-tooltip="引っ越しのお知らせ" aria-label="次: 引っ越しのお知らせ">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">次</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/" title="Facebookで共有">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/" title="Twitterで共有">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/" title="Google+で共有">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 Owl. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Get-ready-for-qrl-launch-ja/" data-tooltip="Get ready for QRL launch! (日本語訳)" aria-label="前: Get ready for QRL launch! (日本語訳)">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">前</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/引っ越しのお知らせ/" data-tooltip="引っ越しのお知らせ" aria-label="次: 引っ越しのお知らせ">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">次</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/" title="Facebookで共有">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/" title="Twitterで共有">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/" title="Google+で共有">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Facebookで共有</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>Twitterで共有</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://yoursite.com/2018/01/06/Statefullness-and-security-ja/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>Google+で共有</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <h4 id="about-card-name">Owl</h4>
+        
+            <div id="about-card-bio"><p>新しいもの好きなフクロウです</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>モノ作り</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                Japan
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/wallpaper.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-peofhqjkzcghmndknakluequy1y6owxdwpaqyju9ntl9zxnk7rdolb3rjjoj.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>
