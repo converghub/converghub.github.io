@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="Nest of Owl">
 <meta property="og:description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2018-01-12T13:21:05.834Z">
+<meta property="og:updated_time" content="2018-01-12T13:36:17.702Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ハッシュベース署名方式（１）　ワンタイム署名">
 <meta name="twitter:description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
@@ -308,7 +308,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -342,7 +342,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -393,7 +393,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -427,7 +427,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -527,6 +527,23 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>
