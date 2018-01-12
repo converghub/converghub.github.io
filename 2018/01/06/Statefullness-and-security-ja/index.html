@@ -3,7 +3,7 @@
 <html lang="ja">
     
 <head>
-    <meta charset="UTF-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Nest of Owl">
     <title>Statefull and security (日本語訳) - Nest of Owl</title>
@@ -13,18 +13,18 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="※赤字は追加で解説，資料等記載します。 ステートフルとセキュリティQRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレットで使用され">
+    <meta name="description" content="※赤字は追加で解説，資料等記載します。  ステートフルとセキュリティ QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。 （論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ）  トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレ">
 <meta name="keywords" content="QRL">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Statefull and security (日本語訳)">
 <meta property="og:url" content="https://converghub.github.io/2018/01/06/Statefullness-and-security-ja/index.html">
 <meta property="og:site_name" content="Nest of Owl">
-<meta property="og:description" content="※赤字は追加で解説，資料等記載します。 ステートフルとセキュリティQRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレットで使用され">
+<meta property="og:description" content="※赤字は追加で解説，資料等記載します。  ステートフルとセキュリティ QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。 （論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ）  トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレ">
 <meta property="og:locale" content="ja">
 <meta property="og:updated_time" content="2018-01-06T07:55:18.670Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Statefull and security (日本語訳)">
-<meta name="twitter:description" content="※赤字は追加で解説，資料等記載します。 ステートフルとセキュリティQRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレットで使用され">
+<meta name="twitter:description" content="※赤字は追加で解説，資料等記載します。  ステートフルとセキュリティ QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。 （論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ）  トランザクションがQRLのアドレスから署名されるたびに，Winternitz OTS+ワンタイム署名がXMSSウォレ">
     
     
         
@@ -35,14 +35,14 @@
     
     <!--STYLES-->
     <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
-    <!--STYLES END-->
+    <!--STYLES END--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
 
     
 </head>
 
     <body>
-        <div id="blog">
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="blog">
             <!-- Define author's picture -->
 
 
@@ -217,8 +217,9 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <p><span style="color: #ff0000">※赤字は追加で解説，資料等記載します。<br></span></p>
-<h1 id="ステートフルとセキュリティ"><a href="#ステートフルとセキュリティ" class="headerlink" title="ステートフルとセキュリティ"></a>ステートフルとセキュリティ</h1><p>QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。<br><br><span style="color: #ff0000">（論文は次を参照ください。<a href="https://eprint.iacr.org/2011/484.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2011/484.pdf</a> ）<br></span></p>
+            <p><span style="color: #ff0000">※赤字は追加で解説，資料等記載します。 </span></p>
+<h1 id="ステートフルとセキュリティ">ステートフルとセキュリティ</h1>
+<p>QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。<br> <span style="color: #ff0000">（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） </span></p>
 <p>トランザクションがQRLのアドレスから署名されるたびに，<i>Winternitz OTS+</i>ワンタイム署名がXMSSウォレットで使用されます。</p>
 <p>同一のワンタイム署名から再度署名（=同一のXMSS木のインデックスを再利用）し，有効な署名でトランザクションを作成することは可能です。一方で，ブロックが追加されたときルーチンの状態検証中にワンタイム署名の再利用を禁止するため，QRLのネットワークではこのトランザクションを拒否します。</p>
 <p>しかしながら，同一のワンタイム署名のインデックスを再利用しつづける場合，XMSSのセキュリティは徐々に低下します。</p>
@@ -226,20 +227,23 @@
 <p>署名が2つの場合は2<sup>34</sup>，3つの場合2<sup>23</sup>，4つの場合2<sup>18</sup>のハッシュが必要になります。</p>
 <p>明らかに，XMSSのこのステートフルなセキュリティの側面は，安全に使用できる実際の状況がほとんどないことを意味しています。その理由は，署名者（ウォレット）が同一のインデックスに繰り返し署名し，ウォレットのXMSS木の秘密鍵を危険にさらすことを許容することが絶対に致命的であるからです。</p>
 <p>それゆえに，新しい状態とインクリメントされた木のインデックスを反映させるために，各々の署名のあとにウォレットファイルは更新されなければなりません。ウォレットが同一のインデックスから署名してる限りは，すべて問題ありません。</p>
-<h1 id="QRLのウェブウォレット"><a href="#QRLのウェブウォレット" class="headerlink" title="QRLのウェブウォレット"></a>QRLのウェブウォレット</h1><p>シンプルです。ウォレットファイルでqrlcoreを利用している場合や，のちにすべてを安全に保存するためにLedger Nanoを使用する場合は，すべてが自動的に処理されます。</p>
+<h1 id="qrlのウェブウォレット">QRLのウェブウォレット</h1>
+<p>シンプルです。ウォレットファイルでqrlcoreを利用している場合や，のちにすべてを安全に保存するためにLedger Nanoを使用する場合は，すべてが自動的に処理されます。</p>
 <p>しかし，古いウォレットファイルをバックアップから復元するとどうなるでしょうか？またはウォレットファイル無しのウォレットがある場合は？</p>
-<p>私たちのウェブウォレットは現在機能しており（ <a href="https://wallet.qrlexplorer.info/" target="_blank" rel="noopener">https://wallet.qrlexplorer.info/</a> ），これはニーモニックフレーズまたはhexseedで開かれます。<br><br><span style="color: #ff0000">（2017/12/20時点で，これはTestnet用のウェブウォレットです。BittrexでトレードされているQRLトークンはERC20トークンでありますので，このウェブウォレットは利用できません。メインネットをお待ちください）</span></p>
+<p>私たちのウェブウォレットは現在機能しており（ https://wallet.qrlexplorer.info/ ），これはニーモニックフレーズまたはhexseedで開かれます。<br> <span style="color: #ff0000">（2017/12/20時点で，これはTestnet用のウェブウォレットです。BittrexでトレードされているQRLトークンはERC20トークンでありますので，このウェブウォレットは利用できません。メインネットをお待ちください）</span></p>
 <p>1つのオプションとしては，各セッションの後にユーザーに対してウォレット・インデックス番号を覚えてもらうことを頼むことです。 しかし，これはユーザーが覚えた後で思い出すことに依存するので，問題が発生しやすくなります。 自分のウェブウォレットにアクセスすることがまれである場合，または単にウォレット・インデックスを忘れた場合，システムは失敗します。</p>
 <p>しかし私たちは運がいいです。QRLのブロックチェーンは助けてくれます。</p>
-<p>すでにチェーン内にあるXMSSインデックスはバーンされたと考えることができます。潜在的に，有効なXMSSインデックスは，まだトランザクションを署名するために使用されていないものです。ウェブウォレットがQRLのネットワークに接続すると，QRLのアドレスのトランザクション履歴をロードし，送信されたトランザクション数を使用して現在のXMSS木インデックスを計算します。<br><br><span style="color: #ff0000">（XMSSの構造上ウォレットファイルは更新され続けなければなりません。それが何らかの破損をしても救助できるということであり，ウォレットのニーモニックフレーズ自体はしっかり保存してください）</span></p>
+<p>すでにチェーン内にあるXMSSインデックスはバーンされたと考えることができます。潜在的に，有効なXMSSインデックスは，まだトランザクションを署名するために使用されていないものです。ウェブウォレットがQRLのネットワークに接続すると，QRLのアドレスのトランザクション履歴をロードし，送信されたトランザクション数を使用して現在のXMSS木インデックスを計算します。<br> <span style="color: #ff0000">（XMSSの構造上ウォレットファイルは更新され続けなければなりません。それが何らかの破損をしても救助できるということであり，ウォレットのニーモニックフレーズ自体はしっかり保存してください）</span></p>
 <p>ウェブウォレットブラウザのインスタンスとQRLのP2Pネットワーク間で中間者攻撃をしようとする悪意のあるノードによって，ウェブウォレットが欺かれることがあるでしょうか？</p>
 <p>ウェブウォレットは，自分のアドレスの履歴にある各トランザクションを簡単に検証できます。悪意のあるノードが行うことができるのは，ウェブウォレットが正しくない誤った低いインデックスで署名するよう混乱させるために，極めて少ないトランザクションを送信させることくらいです。そのインデックス位置でのワンタイム署名がすでにQRLネットワークでブラックリスト化されますので，これは何も達成することができません。悪意のあるノードは，期待より高いインデックスから署名させるようウェブウォレットを欺くトランザクションを偽造することはできません。そうする正当な署名を生成することができないからです。</p>
 <p>ここまでは順調ですね。</p>
 <p>現在のインデックスから秘密鍵を危険にさらすのに十分な回数署名するよう，ウェブウオレットを欺くため，悪意のあるノードが意図的にトランザクションを伝播できないようにすることは可能でしょうか？</p>
 <p>私たちのウェブウォレットは，トランザクションを複数のノードに伝播することによってこの可能性を緩和します。 さらに，別のランダムなノードからメモリプール・ブロック内のtxを見るまで，再びアクティブセッションで再度署名することはありません。</p>
-<h1 id="NIST"><a href="#NIST" class="headerlink" title="NIST"></a>NIST</h1><p>しばらくの間，プレースホルダーのエフェメラルメッセージルーチンがin-situで実行されました。 私たちのend-endポスト量子セキュア・データ・チャネルは，両端に2つの公開鍵を含む<i>EPH</i>トランザクションによってリンクされています。これを分散格子公開鍵サーバと考えてください。 現在，それらは<i>ECC</i>公開鍵であり，一つは署名用でもう一つは暗号化用です。 しかし，NISTがリリース（そう長くない）するとすぐに，私たちは署名用の<i>dilithium</i>鍵と、エフェメラルなトラフィックを格子暗号化するための<i>kyber</i>鍵を用意します。<br><br><span style="color: #ff0000">（dilithiumの論文：<br><a href="https://eprint.iacr.org/2017/633.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2017/633.pdf</a><br><br><br>kyberの論文：<br><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2017/634.pdf</a> ）</span></p>
-<h1 id="お知らせ"><a href="#お知らせ" class="headerlink" title="お知らせ"></a>お知らせ</h1><p>今月下旬に発表する新しいメンバー変更と，ロードマップとタイムラインの両方に（とても興奮する）大きな変化があります！<br><br><br><br></p>
-<p><span style="color: #ff0000">以上，翻訳でした。<br><br>（個人的な予想ですが，おそらくお知らせはパブリックテストネットの段階から次の段階へ移行する旨の発表ではないのかなと考えています）</span></p>
+<h1 id="nist">NIST</h1>
+<p>しばらくの間，プレースホルダーのエフェメラルメッセージルーチンがin-situで実行されました。 私たちのend-endポスト量子セキュア・データ・チャネルは，両端に2つの公開鍵を含む<i>EPH</i>トランザクションによってリンクされています。これを分散格子公開鍵サーバと考えてください。 現在，それらは<i>ECC</i>公開鍵であり，一つは署名用でもう一つは暗号化用です。 しかし，NISTがリリース（そう長くない）するとすぐに，私たちは署名用の<i>dilithium</i>鍵と、エフェメラルなトラフィックを格子暗号化するための<i>kyber</i>鍵を用意します。<br> <span style="color: #ff0000">（dilithiumの論文： https://eprint.iacr.org/2017/633.pdf <br> kyberの論文： https://eprint.iacr.org/2017/634.pdf ）</span></p>
+<h1 id="お知らせ">お知らせ</h1>
+<p>今月下旬に発表する新しいメンバー変更と，ロードマップとタイムラインの両方に（とても興奮する）大きな変化があります！ <br> <br></p>
+<p><span style="color: #ff0000">以上，翻訳でした。<br> （個人的な予想ですが，おそらくお知らせはパブリックテストネットの段階から次の段階へ移行する旨の発表ではないのかなと考えています）</span></p>
 
             
 
@@ -280,7 +284,7 @@
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -314,7 +318,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -366,7 +370,7 @@
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -400,7 +404,7 @@
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -486,5 +490,20 @@
 
 
 
-    </body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
 </html>

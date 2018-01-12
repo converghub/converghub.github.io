@@ -3,7 +3,7 @@
 <html lang="ja">
     
 <head>
-    <meta charset="UTF-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Nest of Owl">
     <title>アーカイブ: 2018/1 - Nest of Owl</title>
@@ -30,14 +30,14 @@
     
     <!--STYLES-->
     <link rel="stylesheet" href="/assets/css/style-pz4cc6y13wt2trzqa8l3n9v0yykr0sstdaheem7qj628nhjmhp9pfawvqawz.min.css">
-    <!--STYLES END-->
+    <!--STYLES END--><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
 
     
 </head>
 
     <body>
-        <div id="blog">
+        <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="blog">
             <!-- Define author's picture -->
 
 
@@ -191,6 +191,106 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/12/hash-based-signatures-1/">
+                            ハッシュベース署名方式（１）　ワンタイム署名
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-12T17:19:52+09:00">
+	
+		    2018/01/12
+    	
+    </time>
+    
+        <span>カテゴリー </span>
+        
+    <a class="category-link" href="/categories/暗号通貨/">暗号通貨</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <h1 id="lamport"><a href="https://www.microsoft.com/en-us/research/publication/constructing-digital-signatures-one-way-function/?from=http%3A%2F%2Fresearch.microsoft.com%2Fen-us%2Fum%2Fpeople%2Flamport%2Fpubs%2Fdig-sig.pdf" target="_blank" rel="noopener">Lamport</a></h1>
+<p>1979年の10月18日にLeslie Lamportによって<b>ワンタイム署名</b>のコンセプトが発表された。</p>
+<p>ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。</p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="center">公開鍵</td>
+<td align="center">$ h(x)|h(y)$</td>
+</tr>
+<tr class="even">
+<td align="center">秘密鍵</td>
+<td align="center">$ (x,y) $</td>
+</tr>
+</tbody>
+</table>
+<p>とても単純なスキームとして，<span class="math inline">\(x\)</span>，<span class="math inline">\(y\)</span>を整数とすると，単一のビットへの署名は， <br> - もし0なら，<span class="math inline">\(x\)</span>を公開する<br> - もし1なら，<span class="math inline">\(y\)</span>を公開する</p>
+<p>それを2度と署名に使わないこと。 もし複数のビットに署名したい場合はどうすればいいか？ できることは，署名したいメッセージを固定長の出力となるようにハッシング することです。例えば，SHA-256など。</p>
+<p>そのとき，256個の秘密鍵のペアが必要になって，次のようになる。<br></p>
+<table>
+<tbody>
+<tr class="odd">
+<td align="center">公開鍵</td>
+<td align="center">$ h(x_0)|h(x_0), h(x_1)|h(x_2),...,h(x_{255}) | h(y_{255})$</td>
+</tr>
+<tr class="even">
+<td align="center">秘密鍵</td>
+<td align="center">$ (x_0,y_0),(x_1,y_1),...,(x_{255},y_{255}) $</td>
+</tr>
+</tbody>
+</table>
+<p>そしてもし，<span class="math inline">\(100110_2....\)</span>に署名したい場合は，<span class="math inline">\((y_0,x_1,x_2,y_3,y_4,x_5,...)\)</span>というように公開する。</p>
+<p>詳細は，<a href="https://qiita.com/onokatio/items/689965fa484d40d851ce" target="_blank" rel="noopener">Qiita</a>にも取り上げられているので，そちらに譲る。</p>
+<h1 id="winternitz-ots-wots">Winternitz OTS (WOTS)</h1>
+<p>Lamportの発表から数か月あと，スタンフォードの数学学科のRobert Winternitzが，<span class="math inline">\(h(x)|h(y)\)</span>の公開の代わりに<span class="math inline">\(h^w(x)\)</span>を公開することを提案した。</p>
+<p>例えば，<span class="math inline">\(w=16\)</span>として<span class="math inline">\(h^{16}(x)\)</span>を公開鍵として公開する場合，<span class="math inline">\(x\)</span>は秘密鍵。次のバイナリ<span class="math inline">\(1101_2\)</span>に署名したい場合，<span class="math inline">\(h^9(x)\)</span>を公開すればいい。</p>
+<p>問題は，悪意のある人間が<span class="math inline">\(h^{10}(x)\)</span>を検索するために，この署名とハッシュを見られることで，それゆえ有効な署名を偽造しうること。</p>
+<p>これはメッセージの後ろに短いチェックサム（同様に署名する必要がある）を追加することで回避可能。</p>
+<h1 id="variant-of-winternitz-ots"><a href="https://eprint.iacr.org/2011/191.pdf" target="_blank" rel="noopener">Variant of Winternitz OTS</a></h1>
+<p>長い長い年月のあと，2011年に，Buchmann et alがWinternitz OTSのアップデートを公開して，鍵でパラメータ化された族を利用して新しいWOTSの変種を紹介した。MACと呼ばれている。</p>
+<p>MACで使用される鍵のリストが秘密鍵で，メッセージは何度MACを反復するかを指定することになる。以前の出力が鍵を置き換えるため固有の反復であり，常に同じ公開された入力を使用する。</p>
+<p>メッセージ<span class="math inline">\(M=1011_2\)</span>があり，WOTSの変種が3を基底とするメッセージとして動作するとする（実際には任意の基底<span class="math inline">\(w\)</span>でも大丈夫）。<span class="math inline">\(M=(M_0,M_1,M_2)=(1,0,2)\)</span>は<span class="math inline">\(102_3\)</span>を表すとする。</p>
+<p>これを署名するには，<span class="math inline">\((f^1_{sk_1}(x)=f_{sk_1}(x),\, f^0_{sk_2}(x)=sk_2 ,\, f^2_{sk_3}(x)=f_{\{f_{sk_3(x)}\}}(x) )\)</span>を公開すればいい。</p>
+<p>まだメッセージに署名が必要なチェックサムが適用されるが，詳細割愛。 チェックサムにより，公開鍵の中で<span class="math inline">\(M_2=2\)</span>と知られていても関係がない。</p>
+<p>直感的に，連鎖していくことで公開鍵により良いセキュリティを提供することになる。</p>
+<h1 id="winternitz-otswots"><a href="https://huelsing.files.wordpress.com/2013/05/wotsspr.pdf" target="_blank" rel="noopener">Winternitz OTS+(WOTS+)</a></h1>
+<p>変種の発表の2年後，Hulsingだけで，署名サイズを短くし，以前のスキームのセキュリティを向上させるアップグレード版を公開した。これは，鍵付き関数族に加えて，連鎖関数を使用する。今度は，鍵は常に同じで，それは一つ前の出力が入力となる。また，一方向性関数が適用される前にランダム値（またはマスク）がXORされる。</p>
+<p>入力<span class="math inline">\(x \in \{0, 1\}^n\)</span>，反復カウンタ<span class="math inline">\(i\in \mathbb{N}\)</span>，ランダム要素<span class="math inline">\(\bf{r}\)</span><span class="math inline">\(=(r_1,...,r_j) \in \{0,1\}^{n\times j}(j\geq i)\)</span>とすると，連鎖関数は次のように働く。<br> <span class="math inline">\(i=0\)</span>のとき，連鎖関数<span class="math inline">\(c\)</span>は<span class="math inline">\(x\)</span>を返す<span class="math inline">\((c_k^0(x,\textbf{r})=x)\)</span>。<br> <span class="math inline">\(i&gt;0\)</span>のとき，連鎖関数<span class="math inline">\(c\)</span>は再帰的に次のようになる。 <span class="math display">\[
+c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
+\]</span> <span class="math inline">\(f_k\)</span>について，鍵空間<span class="math inline">\({\cal K}_n\)</span>とすると，関数族<span class="math inline">\({\cal F}_n:\{f_k : \{0,1\}^{n} \to \{0,1\}^{n} | \,\, k\in {\cal K}_n \}\)</span>を満たす。<br> 要は，圧縮なしの暗号学的なハッシュ関数。</p>
+<h1 id="その他のotsについて">その他のOTSについて</h1>
+<p>他にもいろいろ提案されている。<br> - 1994，<a href="ftp://ftp.inf.ethz.ch/pub/crypto/publications/BleMau94.pdf" target="_blank" rel="noopener">The Bleichenbacher-Maurer OTS</a><br> - 2001，<a href="http://www.netsec.ethz.ch/publications/papers/biba.pdf" target="_blank" rel="noopener">The BiBa OTS</a><br> - 2002，<a href="https://www.cs.bu.edu/~reyzin/papers/one-time-sigs.pdf" target="_blank" rel="noopener">HORS</a><br> - 2014，<a href="https://cryptojedi.org/papers/sphincs-20141001.pdf" target="_blank" rel="noopener">HORST, SPHINCS</a><br></p>
+<p><a href="http://pqcrypto.eu.org/docs/initial-recommendations.pdf" target="_blank" rel="noopener">PQCRYPTO ICT-645622</a>によると，耐量子として，公開鍵署名に推奨されているものは，XMSSとSPHINCS-256。<br> （XMSSはステートフル署名，SPHINCSはステートレス署名）</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/01/12/hash-based-signatures-1/#post-footer" class="postShorten-excerpt_link link">
+                                コメント・シェア
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/06/Get-ready-for-qrl-launch-ja/">
                             Get ready for QRL launch! (日本語訳)
                         </a>
@@ -214,10 +314,13 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <p><span style="color: #ff0000">※追加コメント等は赤字で記載いたします<br></span></p>
+                    <p><span style="color: #ff0000">※追加コメント等は赤字で記載いたします </span></p>
 <p>暗号通貨のエコシステムにとっては何という年でしょう！価格については無視してプロジェクトに集中しようとしていましたが，暗号通貨全体が今年で約0.6兆ドルにまで拡大したことは見過ごせません。何年も前に気づいたことを世界の人々が納得するまで我慢強く待っていたので，2012・2013年からその現場にいた私たちにとってはとても信じられないことです。このような空間の革新と成長は畏敬の念をおこすものです。資産とインターネットのペイメント層としての暗号通貨は，本当の本当にやってきました。</p>
+<p> </p>
 <p>このブログは長くなるので，最初に大きなこと―ローンチのタイミングと詳細をお届けします！</p>
-<h1 id="ロードマップの変更-ー-メインネットローンチは-Q1-2018"><a href="#ロードマップの変更-ー-メインネットローンチは-Q1-2018" class="headerlink" title="ロードマップの変更　ー　メインネットローンチは Q1 2018"></a>ロードマップの変更　ー　メインネットローンチは Q1 2018</h1><p>できるだけ早くローンチするため，ロードマップを大きく変更しました。</p>
+<p> </p>
+<h1 id="ロードマップの変更ーメインネットローンチは-q1-2018">ロードマップの変更　ー　メインネットローンチは Q1 2018</h1>
+<p>できるだけ早くローンチするため，ロードマップを大きく変更しました。</p>
 <p>プロジェクトをよく知っている人は，パブリックテストネットで数か月間Proof of Stakeのプロトコルを徹底的に繰り返しテストしていたことをよく知っています。</p>
 <p>大きな進歩を遂げましたが，私たちの現在のプロトコルで低電力デバイス（Pi3以上）を投入する計画は挑戦的であり，ここ数週間でメインネットのリリースを押し戻してきました。</p>
 <p>私たちはプロトコルにいくつかの変更を加える必要があり，これらをさらに広範にテストし，それを査読（ピアレビュー）に公開する必要があります。これは，商用レベルで適切に完了するために，少なくとも4～6か月かかるでしょう。</p>
@@ -225,64 +328,60 @@
 <p>また，QRLとの統合を希望する将来のパートナーがチェーンを必要とし，私たちが＃１として立ち上げることが重要であるため，ローンチをさらに遅らせないことが肝心です。</p>
 <p>このことを念頭に置いて，今月初めにMenero/XMRで使用されるcryptonightを一時的なPoWアルゴリズムとしてローンチし，さらにQ3 2018にPoSへとハードフォークする，という大きな決断を下しました。</p>
 <p>PoWは2009年から何度も試されているアルゴリズムであり，非常に簡単に統合できます。<b>私たちはすでにプライベートデベロッパーテストネットでqrlcoreをPoWに完全に適合させており，mid Q1 2018にローンチすることを目指していて，内ではカウントダウンはすでに始まっています。</b>機能はすでに固まっています。私たちは外部監査（コード監査）の準備をしています。</p>
-<h1 id="トークンの移行"><a href="#トークンの移行" class="headerlink" title="トークンの移行"></a>トークンの移行</h1><p>ユーザーがERC20トークンの残高をBurnアドレスに移動し，メインネットのローンチ時に自動的に残高が含まれるというトークンの移行は，<b>来月開始される予定です</b>。そのプロセスの詳細を説明するブログ記事が新年の少し後にあります。メインネットローンチ時に移行しないユーザーは，もちろん，のちに安全にコインをアンロックするオプションがあります。<br><br><span style="color: #ff0000">※トークンの移行は，現在のERC20トークンをユーザーがBurnアドレスに送信しまずBurnします。その時に①Burn用のアドレスと②QRLメインネットのアドレスが紐づけられるようです。メインネットローンチ時Genesis Block内に，Burnした残高に1:1対応して数値が反映されることになります。</span></p>
+<h1 id="トークンの移行">トークンの移行</h1>
+<p>ユーザーがERC20トークンの残高をBurnアドレスに移動し，メインネットのローンチ時に自動的に残高が含まれるというトークンの移行は，<b>来月開始される予定です</b>。そのプロセスの詳細を説明するブログ記事が新年の少し後にあります。メインネットローンチ時に移行しないユーザーは，もちろん，のちに安全にコインをアンロックするオプションがあります。<br> <span style="color: #ff0000">※トークンの移行は，現在のERC20トークンをユーザーがBurnアドレスに送信しまずBurnします。その時に①Burn用のアドレスと②QRLメインネットのアドレスが紐づけられるようです。メインネットローンチ時Genesis Block内に，Burnした残高に1:1対応して数値が反映されることになります。</span></p>
 <p>取引所との協議は進行中ですー私たちは，今は何も新しいことを表にすることはできません！</p>
-<h1 id="Proof-of-stakeへの移行"><a href="#Proof-of-stakeへの移行" class="headerlink" title="Proof-of-stakeへの移行"></a>Proof-of-stakeへの移行</h1><p>2018年を通して私たちは3つのQRLを維持することになります。</p>
-<ol>
+<h1 id="proof-of-stakeへの移行">Proof-of-stakeへの移行</h1>
+<p>2018年を通して私たちは3つのQRLを維持することになります。</p>
+<ol style="list-style-type: decimal">
 <li>Mainnet-PoW.</li>
 <li>Testnet-PoW.</li>
 <li>Testnet-PoS.</li>
 </ol>
 <p>2018年を通してフルタイムの開発とプロトコルのテストは継続（実際，拡大）されます。ハードフォークのスケジュールとして，Q3 2018に純粋にPoSにハードフォークします。</p>
 <p>QRLの排出スケジュールは，PoSへの移行やステーキングの前に採掘されると予想される2399544.94（利用可能な供給量の3.54%，総供給量の2.18%）と変わらないままです</p>
-<h1 id="エフェメラルメッセージ"><a href="#エフェメラルメッセージ" class="headerlink" title="エフェメラルメッセージ"></a>エフェメラルメッセージ</h1><p>私たちのブロックチェーンの上に置くメッセージング層は，もうコードベースに統合されていますー<i><a href="https://cryptojedi.org/papers/dilithium-20170627.pdf" target="_blank" rel="noopener">Dilithium</a></i>と<i><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">Kyber</a></i>を実装しています。私たちは今，QRLに組み込まれた3つの異なるポスト量子セキュアな暗号システムを持っていることになります。</p>
+<h1 id="エフェメラルメッセージ">エフェメラルメッセージ</h1>
+<p>私たちのブロックチェーンの上に置くメッセージング層は，もうコードベースに統合されていますー<i><a href="https://cryptojedi.org/papers/dilithium-20170627.pdf" target="_blank" rel="noopener">Dilithium</a></i>と<i><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">Kyber</a></i>を実装しています。私たちは今，QRLに組み込まれた3つの異なるポスト量子セキュアな暗号システムを持っていることになります。</p>
 <p>これにより，エキサイティングなレイヤーの2つの機能の多くがオンラインになりました！</p>
-<h1 id="チームの拡大は2018年も続きます"><a href="#チームの拡大は2018年も続きます" class="headerlink" title="チームの拡大は2018年も続きます"></a>チームの拡大は2018年も続きます</h1><p>UX，モバイル，およびコア開発者として働く追加の<b>チームの3人のフルタイム開発メンバー</b>をまもなく発表する予定です。これについてはもっと詳しく近日中に。QRLのリモートオフィスは忙しい場所になりつつあります。</p>
+<h1 id="チームの拡大は2018年も続きます">チームの拡大は2018年も続きます</h1>
+<p>UX，モバイル，およびコア開発者として働く追加の<b>チームの3人のフルタイム開発メンバー</b>をまもなく発表する予定です。これについてはもっと詳しく近日中に。QRLのリモートオフィスは忙しい場所になりつつあります。</p>
 <p>さらに，<b>アドバイザーとしてRobby Dermody</b>をチームに加えることをとても嬉しく思います。彼はCounterpartyプロジェクトのFounderであり，私たちの成長するプロジェクトにすでに優れた付加価値を立証してくれています。</p>
-<h1 id="2018年のカンファレンス"><a href="#2018年のカンファレンス" class="headerlink" title="2018年のカンファレンス"></a>2018年のカンファレンス</h1><p><span style="color: #ff0000">(画像は省略)<br></span><br><br>QRLチームは英国，米国，カナダからオランダ，インド，オーストラリアと世界中に分散しています。</p>
-<p>私たちは屋外に出向いて，次の会議に出席して，2018年上半期にプロジェクトの概要を公開する予定です。ーBlock Delhi，APAC Australia，CryptoValley，そしてBlockchain Global Expoです。<br>また潜在的にさらに多くの会議に出席し（例えばConsensus 2018），2018年の後半にはさらにもっとあるでしょう！</p>
+<h1 id="年のカンファレンス">2018年のカンファレンス</h1>
+<p><span style="color: #ff0000">(画像は省略) </span><br> QRLチームは英国，米国，カナダからオランダ，インド，オーストラリアと世界中に分散しています。</p>
+<p>私たちは屋外に出向いて，次の会議に出席して，2018年上半期にプロジェクトの概要を公開する予定です。ーBlock Delhi，APAC Australia，CryptoValley，そしてBlockchain Global Expoです。 また潜在的にさらに多くの会議に出席し（例えばConsensus 2018），2018年の後半にはさらにもっとあるでしょう！</p>
 <p>これらのイベントで多くの方々にお会いし，私たちのプロジェクトについて広めていただければ幸いです。青/紫のQRLロゴのTシャツを探しましょう！</p>
-<h1 id="メインネットローンチ時のフィーチャーセット"><a href="#メインネットローンチ時のフィーチャーセット" class="headerlink" title="メインネットローンチ時のフィーチャーセット"></a>メインネットローンチ時のフィーチャーセット</h1><p>Q1 2018に次のフィーチャーセットをお届けします。</p>
-<ol>
-<li><p>マルチプラットフォームのqrlcoreノードのリリース</p>
-</li>
-<li><p>QRL(<i>XMSS</i>)の100%PQセキュアなアドレス空間</p>
-</li>
-<li><p>cryptonight PoWアルゴリズム，ブロック時間間隔1分，既存ソフトウェアを使用した既存プールでのマイニング</p>
-</li>
-<li><p>エフェメラル・メッセージング層機能（<i><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">Kyber</a></i>および<i><a href="https://cryptojedi.org/papers/dilithium-20170627.pdf" target="_blank" rel="noopener">Dilithium</a></i>を利用するPQ-secure端末間データチャンネル機能）</p>
-</li>
-<li><p>ユニバーサルなgRPC APIによってノードを通過するすべてのウォレットベースのリクエストと，完全に分離されたウォレットとノードの機能性</p>
-</li>
-<li><p>スレーブXMSS木署名機能を使用して秘密鍵をオフラインに保つ安全なマイニングを可能にします</p>
-</li>
-<li><p>GUIベースのウェブウォレットとフルブロックエクスプローラ機能</p>
-</li>
-<li><p>PQトークン作成機能ーQRLチェーン上にトークンを作成・送信することができます</p>
-</li>
-<li><p>PQセキュア・データスタンプ機能</p>
-</li>
+<h1 id="メインネットローンチ時のフィーチャーセット">メインネットローンチ時のフィーチャーセット</h1>
+<p>Q1 2018に次のフィーチャーセットをお届けします。</p>
+<ol style="list-style-type: decimal">
+<li><p>マルチプラットフォームのqrlcoreノードのリリース</p></li>
+<li><p>QRL(<i>XMSS</i>)の100%PQセキュアなアドレス空間</p></li>
+<li><p>cryptonight PoWアルゴリズム，ブロック時間間隔1分，既存ソフトウェアを使用した既存プールでのマイニング</p></li>
+<li><p>エフェメラル・メッセージング層機能（<i><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">Kyber</a></i>および<i><a href="https://cryptojedi.org/papers/dilithium-20170627.pdf" target="_blank" rel="noopener">Dilithium</a></i>を利用するPQ-secure端末間データチャンネル機能）</p></li>
+<li><p>ユニバーサルなgRPC APIによってノードを通過するすべてのウォレットベースのリクエストと，完全に分離されたウォレットとノードの機能性</p></li>
+<li><p>スレーブXMSS木署名機能を使用して秘密鍵をオフラインに保つ安全なマイニングを可能にします</p></li>
+<li><p>GUIベースのウェブウォレットとフルブロックエクスプローラ機能</p></li>
+<li><p>PQトークン作成機能ーQRLチェーン上にトークンを作成・送信することができます</p></li>
+<li><p>PQセキュア・データスタンプ機能</p></li>
 </ol>
 <p>さらに，Ledger Nano上で完全な<i>XMSS</i>署名を実装するために非常に努力しています。そして，私たちはエフェメラル機能を早期に発揮するために，Mainnetのローンチ時にプロトタイプとしてWhatsApp形式のPQ-secureメッセージングアプリを利用できると期待しています。</p>
-<h1 id="TDLR"><a href="#TDLR" class="headerlink" title="TDLR"></a>TDLR</h1><ol>
-<li><p>QRLはmid Q1 2018に利用可能になり，Q3 2018のハードフォークによってPoWからPoSへ移行します</p>
-</li>
-<li><p>ERC20トークンからQRLトークンへの移行は来月開始します</p>
-</li>
-<li><p>チームは新しいメンバーと新しいアドバイザーを加え成長します</p>
-</li>
+<h1 id="tdlr">TDLR</h1>
+<ol style="list-style-type: decimal">
+<li><p>QRLはmid Q1 2018に利用可能になり，Q3 2018のハードフォークによってPoWからPoSへ移行します</p></li>
+<li><p>ERC20トークンからQRLトークンへの移行は来月開始します</p></li>
+<li><p>チームは新しいメンバーと新しいアドバイザーを加え成長します</p></li>
 </ol>
 <p><b>十分なポスト量子セキュアなブロックチェーンへのカウントダウンが開始されました。</b></p>
 <p><b>Adam，Aidan，Andrew，Burke，Elliott，Jack，JP，Juan，Kaushal，Leon，Michael，Scott，そして私自身、QRLチームの皆さんにおめでとう！</b></p>
 <p><br><br></p>
-<h1 id="翻訳を終えて"><a href="#翻訳を終えて" class="headerlink" title="翻訳を終えて"></a>翻訳を終えて</h1><p>今回の翻訳は以上になります。<br>最後に発行数等の情報を以下に記載します。</p>
+<h1 id="翻訳を終えて">翻訳を終えて</h1>
+<p>今回の翻訳は以上になります。 最後に発行数等の情報を以下に記載します。</p>
 <ul>
 <li>通貨名：Quantum Resistant Ledger (QRL)<br></li>
 <li>最終供給量： 105,000,000 QRL<br></li>
-<li>最大供給量：   65,000,000 QRL<br></li>
-<li>市場流通量：   52,000,000 QRL<br></li>
-<li>アルゴリズム：PoW（cryptonight），後にカスタムPoS（Testnetで開発中）<br><br></li>
-<li>使用署名方式：<i>XMSS</i>(=<a href="https://eprint.iacr.org/2011/484.pdf" target="_blank" rel="noopener">eXtended Merkle Signature Scheme</a>)<br><br>※OTS(One-Time Signature) Schemeは<i><a href="https://huelsing.files.wordpress.com/2013/05/wotsspr.pdf" target="_blank" rel="noopener">Winternitz OTS+</a></i></li>
+<li>最大供給量： 65,000,000 QRL<br></li>
+<li>市場流通量： 52,000,000 QRL<br></li>
+<li>アルゴリズム：PoW（cryptonight），後にカスタムPoS（Testnetで開発中） <br></li>
+<li>使用署名方式：<i>XMSS</i>(=<a href="https://eprint.iacr.org/2011/484.pdf" target="_blank" rel="noopener">eXtended Merkle Signature Scheme</a>)<br> ※OTS(One-Time Signature) Schemeは<i><a href="https://huelsing.files.wordpress.com/2013/05/wotsspr.pdf" target="_blank" rel="noopener">Winternitz OTS+</a></i></li>
 <li>エフェメラル・メッセージ層で使用される暗号鍵：<i><a href="https://cryptojedi.org/papers/dilithium-20170627.pdf" target="_blank" rel="noopener">Dilithium</a></i>，<i><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">Kyber</a></i></li>
 </ul>
 <p>読んでいただきありがとうございました。</p>
@@ -334,8 +433,9 @@
             </div>
             
                 <div class="postShorten-content" itemprop="articleBody">
-                    <p><span style="color: #ff0000">※赤字は追加で解説，資料等記載します。<br></span></p>
-<h1 id="ステートフルとセキュリティ"><a href="#ステートフルとセキュリティ" class="headerlink" title="ステートフルとセキュリティ"></a>ステートフルとセキュリティ</h1><p>QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。<br><br><span style="color: #ff0000">（論文は次を参照ください。<a href="https://eprint.iacr.org/2011/484.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2011/484.pdf</a> ）<br></span></p>
+                    <p><span style="color: #ff0000">※赤字は追加で解説，資料等記載します。 </span></p>
+<h1 id="ステートフルとセキュリティ">ステートフルとセキュリティ</h1>
+<p>QRLはステートフルなアカウントを保護するため，非常に珍しい署名方式であるXMSSを採用しています。<br> <span style="color: #ff0000">（論文は次を参照ください。https://eprint.iacr.org/2011/484.pdf ） </span></p>
 <p>トランザクションがQRLのアドレスから署名されるたびに，<i>Winternitz OTS+</i>ワンタイム署名がXMSSウォレットで使用されます。</p>
 <p>同一のワンタイム署名から再度署名（=同一のXMSS木のインデックスを再利用）し，有効な署名でトランザクションを作成することは可能です。一方で，ブロックが追加されたときルーチンの状態検証中にワンタイム署名の再利用を禁止するため，QRLのネットワークではこのトランザクションを拒否します。</p>
 <p>しかしながら，同一のワンタイム署名のインデックスを再利用しつづける場合，XMSSのセキュリティは徐々に低下します。</p>
@@ -343,20 +443,23 @@
 <p>署名が2つの場合は2<sup>34</sup>，3つの場合2<sup>23</sup>，4つの場合2<sup>18</sup>のハッシュが必要になります。</p>
 <p>明らかに，XMSSのこのステートフルなセキュリティの側面は，安全に使用できる実際の状況がほとんどないことを意味しています。その理由は，署名者（ウォレット）が同一のインデックスに繰り返し署名し，ウォレットのXMSS木の秘密鍵を危険にさらすことを許容することが絶対に致命的であるからです。</p>
 <p>それゆえに，新しい状態とインクリメントされた木のインデックスを反映させるために，各々の署名のあとにウォレットファイルは更新されなければなりません。ウォレットが同一のインデックスから署名してる限りは，すべて問題ありません。</p>
-<h1 id="QRLのウェブウォレット"><a href="#QRLのウェブウォレット" class="headerlink" title="QRLのウェブウォレット"></a>QRLのウェブウォレット</h1><p>シンプルです。ウォレットファイルでqrlcoreを利用している場合や，のちにすべてを安全に保存するためにLedger Nanoを使用する場合は，すべてが自動的に処理されます。</p>
+<h1 id="qrlのウェブウォレット">QRLのウェブウォレット</h1>
+<p>シンプルです。ウォレットファイルでqrlcoreを利用している場合や，のちにすべてを安全に保存するためにLedger Nanoを使用する場合は，すべてが自動的に処理されます。</p>
 <p>しかし，古いウォレットファイルをバックアップから復元するとどうなるでしょうか？またはウォレットファイル無しのウォレットがある場合は？</p>
-<p>私たちのウェブウォレットは現在機能しており（ <a href="https://wallet.qrlexplorer.info/" target="_blank" rel="noopener">https://wallet.qrlexplorer.info/</a> ），これはニーモニックフレーズまたはhexseedで開かれます。<br><br><span style="color: #ff0000">（2017/12/20時点で，これはTestnet用のウェブウォレットです。BittrexでトレードされているQRLトークンはERC20トークンでありますので，このウェブウォレットは利用できません。メインネットをお待ちください）</span></p>
+<p>私たちのウェブウォレットは現在機能しており（ https://wallet.qrlexplorer.info/ ），これはニーモニックフレーズまたはhexseedで開かれます。<br> <span style="color: #ff0000">（2017/12/20時点で，これはTestnet用のウェブウォレットです。BittrexでトレードされているQRLトークンはERC20トークンでありますので，このウェブウォレットは利用できません。メインネットをお待ちください）</span></p>
 <p>1つのオプションとしては，各セッションの後にユーザーに対してウォレット・インデックス番号を覚えてもらうことを頼むことです。 しかし，これはユーザーが覚えた後で思い出すことに依存するので，問題が発生しやすくなります。 自分のウェブウォレットにアクセスすることがまれである場合，または単にウォレット・インデックスを忘れた場合，システムは失敗します。</p>
 <p>しかし私たちは運がいいです。QRLのブロックチェーンは助けてくれます。</p>
-<p>すでにチェーン内にあるXMSSインデックスはバーンされたと考えることができます。潜在的に，有効なXMSSインデックスは，まだトランザクションを署名するために使用されていないものです。ウェブウォレットがQRLのネットワークに接続すると，QRLのアドレスのトランザクション履歴をロードし，送信されたトランザクション数を使用して現在のXMSS木インデックスを計算します。<br><br><span style="color: #ff0000">（XMSSの構造上ウォレットファイルは更新され続けなければなりません。それが何らかの破損をしても救助できるということであり，ウォレットのニーモニックフレーズ自体はしっかり保存してください）</span></p>
+<p>すでにチェーン内にあるXMSSインデックスはバーンされたと考えることができます。潜在的に，有効なXMSSインデックスは，まだトランザクションを署名するために使用されていないものです。ウェブウォレットがQRLのネットワークに接続すると，QRLのアドレスのトランザクション履歴をロードし，送信されたトランザクション数を使用して現在のXMSS木インデックスを計算します。<br> <span style="color: #ff0000">（XMSSの構造上ウォレットファイルは更新され続けなければなりません。それが何らかの破損をしても救助できるということであり，ウォレットのニーモニックフレーズ自体はしっかり保存してください）</span></p>
 <p>ウェブウォレットブラウザのインスタンスとQRLのP2Pネットワーク間で中間者攻撃をしようとする悪意のあるノードによって，ウェブウォレットが欺かれることがあるでしょうか？</p>
 <p>ウェブウォレットは，自分のアドレスの履歴にある各トランザクションを簡単に検証できます。悪意のあるノードが行うことができるのは，ウェブウォレットが正しくない誤った低いインデックスで署名するよう混乱させるために，極めて少ないトランザクションを送信させることくらいです。そのインデックス位置でのワンタイム署名がすでにQRLネットワークでブラックリスト化されますので，これは何も達成することができません。悪意のあるノードは，期待より高いインデックスから署名させるようウェブウォレットを欺くトランザクションを偽造することはできません。そうする正当な署名を生成することができないからです。</p>
 <p>ここまでは順調ですね。</p>
 <p>現在のインデックスから秘密鍵を危険にさらすのに十分な回数署名するよう，ウェブウオレットを欺くため，悪意のあるノードが意図的にトランザクションを伝播できないようにすることは可能でしょうか？</p>
 <p>私たちのウェブウォレットは，トランザクションを複数のノードに伝播することによってこの可能性を緩和します。 さらに，別のランダムなノードからメモリプール・ブロック内のtxを見るまで，再びアクティブセッションで再度署名することはありません。</p>
-<h1 id="NIST"><a href="#NIST" class="headerlink" title="NIST"></a>NIST</h1><p>しばらくの間，プレースホルダーのエフェメラルメッセージルーチンがin-situで実行されました。 私たちのend-endポスト量子セキュア・データ・チャネルは，両端に2つの公開鍵を含む<i>EPH</i>トランザクションによってリンクされています。これを分散格子公開鍵サーバと考えてください。 現在，それらは<i>ECC</i>公開鍵であり，一つは署名用でもう一つは暗号化用です。 しかし，NISTがリリース（そう長くない）するとすぐに，私たちは署名用の<i>dilithium</i>鍵と、エフェメラルなトラフィックを格子暗号化するための<i>kyber</i>鍵を用意します。<br><br><span style="color: #ff0000">（dilithiumの論文：<br><a href="https://eprint.iacr.org/2017/633.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2017/633.pdf</a><br><br><br>kyberの論文：<br><a href="https://eprint.iacr.org/2017/634.pdf" target="_blank" rel="noopener">https://eprint.iacr.org/2017/634.pdf</a> ）</span></p>
-<h1 id="お知らせ"><a href="#お知らせ" class="headerlink" title="お知らせ"></a>お知らせ</h1><p>今月下旬に発表する新しいメンバー変更と，ロードマップとタイムラインの両方に（とても興奮する）大きな変化があります！<br><br><br><br></p>
-<p><span style="color: #ff0000">以上，翻訳でした。<br><br>（個人的な予想ですが，おそらくお知らせはパブリックテストネットの段階から次の段階へ移行する旨の発表ではないのかなと考えています）</span></p>
+<h1 id="nist">NIST</h1>
+<p>しばらくの間，プレースホルダーのエフェメラルメッセージルーチンがin-situで実行されました。 私たちのend-endポスト量子セキュア・データ・チャネルは，両端に2つの公開鍵を含む<i>EPH</i>トランザクションによってリンクされています。これを分散格子公開鍵サーバと考えてください。 現在，それらは<i>ECC</i>公開鍵であり，一つは署名用でもう一つは暗号化用です。 しかし，NISTがリリース（そう長くない）するとすぐに，私たちは署名用の<i>dilithium</i>鍵と、エフェメラルなトラフィックを格子暗号化するための<i>kyber</i>鍵を用意します。<br> <span style="color: #ff0000">（dilithiumの論文： https://eprint.iacr.org/2017/633.pdf <br> kyberの論文： https://eprint.iacr.org/2017/634.pdf ）</span></p>
+<h1 id="お知らせ">お知らせ</h1>
+<p>今月下旬に発表する新しいメンバー変更と，ロードマップとタイムラインの両方に（とても興奮する）大きな変化があります！ <br> <br></p>
+<p><span style="color: #ff0000">以上，翻訳でした。<br> （個人的な予想ですが，おそらくお知らせはパブリックテストネットの段階から次の段階へ移行する旨の発表ではないのかなと考えています）</span></p>
 
                     
                         
@@ -406,7 +509,7 @@
             
                 <div class="postShorten-content" itemprop="articleBody">
                     <p>はてなブログより引っ越ししました。</p>
-<p>次回からこちらに記事等記載予定です。<br>レイアウト等は時間があればいじっていきます。</p>
+<p>次回からこちらに記事等記載予定です。 レイアウト等は時間があればいじっていきます。</p>
 
                     
                         
@@ -487,5 +590,20 @@
 
 
 
-    </body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
 </html>
