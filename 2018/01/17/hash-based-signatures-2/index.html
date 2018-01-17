@@ -6,25 +6,25 @@
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Nest of Owl">
-    <title>ハッシュベース署名方式（１）　One-time Signatures - Nest of Owl</title>
+    <title>ハッシュベース署名方式（２）　Few-times Signatures - Nest of Owl</title>
     <meta name="author" content="Owl">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
+    <meta name="description" content="同一の公開鍵，秘密鍵から1つ以上の署名をするにはどうすればいいでしょうか。 この記事では，ハッシュベース署名方式がどのように構築されるか確認するのが最終目標です。 One-time Signatures(OTS)だけでなくFew-times signatures(FTS)でも可能です。 HORS HORSは，2002年にReyzin親子によって発表されたBiba(Bins and Ball">
 <meta name="keywords" content="署名方式">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="ハッシュベース署名方式（１）　One-time Signatures">
-<meta property="og:url" content="https://converghub.github.io/2018/01/12/hash-based-signatures-1/index.html">
+<meta property="og:title" content="ハッシュベース署名方式（２）　Few-times Signatures">
+<meta property="og:url" content="https://converghub.github.io/2018/01/17/hash-based-signatures-2/index.html">
 <meta property="og:site_name" content="Nest of Owl">
-<meta property="og:description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
+<meta property="og:description" content="同一の公開鍵，秘密鍵から1つ以上の署名をするにはどうすればいいでしょうか。 この記事では，ハッシュベース署名方式がどのように構築されるか確認するのが最終目標です。 One-time Signatures(OTS)だけでなくFew-times signatures(FTS)でも可能です。 HORS HORSは，2002年にReyzin親子によって発表されたBiba(Bins and Ball">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2018-01-17T03:05:55.151Z">
+<meta property="og:updated_time" content="2018-01-17T04:38:00.332Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ハッシュベース署名方式（１）　One-time Signatures">
-<meta name="twitter:description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
+<meta name="twitter:title" content="ハッシュベース署名方式（２）　Few-times Signatures">
+<meta name="twitter:description" content="同一の公開鍵，秘密鍵から1つ以上の署名をするにはどうすればいいでしょうか。 この記事では，ハッシュベース署名方式がどのように構築されるか確認するのが最終目標です。 One-time Signatures(OTS)だけでなくFew-times signatures(FTS)でも可能です。 HORS HORSは，2002年にReyzin親子によって発表されたBiba(Bins and Ball">
     
     
         
@@ -193,14 +193,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            ハッシュベース署名方式（１）　One-time Signatures
+            ハッシュベース署名方式（２）　Few-times Signatures
         </h1>
     
     
         <div class="post-meta">
-    <time itemprop="datePublished" datetime="2018-01-12T17:19:52+09:00">
+    <time itemprop="datePublished" datetime="2018-01-17T12:03:55+09:00">
 	
-		    2018/01/12
+		    2018/01/17
     	
     </time>
     
@@ -217,58 +217,37 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="lamport"><a href="https://www.microsoft.com/en-us/research/publication/constructing-digital-signatures-one-way-function/?from=http%3A%2F%2Fresearch.microsoft.com%2Fen-us%2Fum%2Fpeople%2Flamport%2Fpubs%2Fdig-sig.pdf" target="_blank" rel="noopener">Lamport</a></h1>
-<p>1979年の10月18日にLeslie Lamportによって<b>ワンタイム署名</b>のコンセプトが発表された。</p>
-<p>ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。</p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="center">公開鍵</td>
-<td align="center">$ h(x)|h(y)$</td>
-</tr>
-<tr class="even">
-<td align="center">秘密鍵</td>
-<td align="center">$ (x,y) $</td>
-</tr>
-</tbody>
-</table>
-<p>とても単純なスキームとして，<span class="math inline">\(x\)</span>，<span class="math inline">\(y\)</span>を整数とすると，単一のビットへの署名は， <br> - もし0なら，<span class="math inline">\(x\)</span>を公開する<br> - もし1なら，<span class="math inline">\(y\)</span>を公開する</p>
-<p>それを2度と署名に使わないこと。 もし複数のビットに署名したい場合はどうすればいいか？ できることは，署名したいメッセージを固定長の出力となるようにハッシング することです。例えば，SHA-256など。</p>
-<p>そのとき，256個の秘密鍵のペアが必要になって，次のようになる。<br></p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="center">公開鍵</td>
-<td align="center">$ h(x_0)|h(x_0), h(x_1)|h(x_2),...,h(x_{255}) | h(y_{255})$</td>
-</tr>
-<tr class="even">
-<td align="center">秘密鍵</td>
-<td align="center">$ (x_0,y_0),(x_1,y_1),...,(x_{255},y_{255}) $</td>
-</tr>
-</tbody>
-</table>
-<p>そしてもし，<span class="math inline">\(100110_2....\)</span>に署名したい場合は，<span class="math inline">\((y_0,x_1,x_2,y_3,y_4,x_5,...)\)</span>というように公開する。</p>
-<p>詳細は，<a href="https://qiita.com/onokatio/items/689965fa484d40d851ce" target="_blank" rel="noopener">Qiita</a>にも取り上げられているので，そちらに譲る。</p>
-<h1 id="winternitz-ots-wots">Winternitz OTS (WOTS)</h1>
-<p>Lamportの発表から数か月あと，スタンフォードの数学学科のRobert Winternitzが，<span class="math inline">\(h(x)|h(y)\)</span>の公開の代わりに<span class="math inline">\(h^w(x)\)</span>を公開することを提案した。</p>
-<p>例えば，<span class="math inline">\(w=16\)</span>として<span class="math inline">\(h^{16}(x)\)</span>を公開鍵として公開する場合，<span class="math inline">\(x\)</span>は秘密鍵。次のバイナリ<span class="math inline">\(1101_2\)</span>に署名したい場合，<span class="math inline">\(h^9(x)\)</span>を公開すればいい。</p>
-<p>問題は，悪意のある人間が<span class="math inline">\(h^{10}(x)\)</span>を検索するために，この署名とハッシュを見られることで，それゆえ有効な署名を偽造しうること。</p>
-<p>これはメッセージの後ろに短いチェックサム（同様に署名する必要がある）を追加することで回避可能。</p>
-<h1 id="variant-of-winternitz-ots"><a href="https://eprint.iacr.org/2011/191.pdf" target="_blank" rel="noopener">Variant of Winternitz OTS</a></h1>
-<p>長い長い年月のあと，2011年に，Buchmann et alがWinternitz OTSのアップデートを公開して，鍵でパラメータ化された族を利用して新しいWOTSの変種を紹介した。MACと呼ばれている。</p>
-<p>MACで使用される鍵のリストが秘密鍵で，メッセージは何度MACを反復するかを指定することになる。以前の出力が鍵を置き換えるため固有の反復であり，常に同じ公開された入力を使用する。</p>
-<p>メッセージ<span class="math inline">\(M=1011_2\)</span>があり，WOTSの変種が3を基底とするメッセージとして動作するとする（実際には任意の基底<span class="math inline">\(w\)</span>でも大丈夫）。<span class="math inline">\(M=(M_0,M_1,M_2)=(1,0,2)\)</span>は<span class="math inline">\(102_3\)</span>を表すとする。</p>
-<p>これを署名するには，<span class="math inline">\((f^1_{sk_1}(x)=f_{sk_1}(x),\, f^0_{sk_2}(x)=sk_2 ,\, f^2_{sk_3}(x)=f_{\{f^1_{sk_3(x)}\}}(x) )\)</span>を公開すればいい。</p>
-<p>まだメッセージに署名が必要なチェックサムが適用されるが，詳細割愛。 チェックサムにより，公開鍵の中で<span class="math inline">\(M_2=2\)</span>と知られていても関係がない。</p>
-<p>直感的に，連鎖していくことで公開鍵により良いセキュリティを提供することになる。</p>
-<h1 id="winternitz-otswots"><a href="https://huelsing.files.wordpress.com/2013/05/wotsspr.pdf" target="_blank" rel="noopener">Winternitz OTS+(WOTS+)</a></h1>
-<p>変種の発表の2年後，Hulsingだけで，署名サイズを短くし，以前のスキームのセキュリティを向上させるアップグレード版を公開した。これは，鍵付き関数族に加えて，連鎖関数を使用する。今度は，鍵は常に同じで，それは一つ前の出力が入力となる。また，一方向性関数が適用される前にランダム値（またはマスク）がXORされる。</p>
-<p>入力<span class="math inline">\(x \in \{0, 1\}^n\)</span>，反復カウンタ<span class="math inline">\(i\in \mathbb{N}\)</span>，ランダム要素<span class="math inline">\(\bf{r}\)</span><span class="math inline">\(=(r_1,...,r_j) \in \{0,1\}^{n\times j}(j\geq i)\)</span>とすると，連鎖関数は次のように働く。<br> <span class="math inline">\(i=0\)</span>のとき，連鎖関数<span class="math inline">\(c\)</span>は<span class="math inline">\(x\)</span>を返す<span class="math inline">\((c_k^0(x,\textbf{r})=x)\)</span>。<br> <span class="math inline">\(i&gt;0\)</span>のとき，連鎖関数<span class="math inline">\(c\)</span>は再帰的に次のようになる。 <span class="math display">\[
-c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
-\]</span> <span class="math inline">\(f_k\)</span>について，鍵空間<span class="math inline">\({\cal K}_n\)</span>とすると，関数族<span class="math inline">\({\cal F}_n:\{f_k : \{0,1\}^{n} \to \{0,1\}^{n} | \,\, k\in {\cal K}_n \}\)</span>を満たす。<br> 要は，圧縮なしの暗号学的なハッシュ関数。</p>
-<h1 id="その他のotsについて">その他のOTSについて</h1>
-<p>他にもいろいろ提案されている。<br> - 1994，<a href="ftp://ftp.inf.ethz.ch/pub/crypto/publications/BleMau94.pdf" target="_blank" rel="noopener">The Bleichenbacher-Maurer OTS</a><br> - 2001，<a href="http://www.netsec.ethz.ch/publications/papers/biba.pdf" target="_blank" rel="noopener">The BiBa OTS</a><br> - 2002，<a href="https://www.cs.bu.edu/~reyzin/papers/one-time-sigs.pdf" target="_blank" rel="noopener">HORS</a><br> - 2014，<a href="https://cryptojedi.org/papers/sphincs-20141001.pdf" target="_blank" rel="noopener">HORST, SPHINCS</a><br></p>
-<p><a href="http://pqcrypto.eu.org/docs/initial-recommendations.pdf" target="_blank" rel="noopener">PQCRYPTO ICT-645622</a>によると，耐量子として，公開鍵署名に推奨されているものは，XMSSとSPHINCS-256。<br> （XMSSはステートフル署名，SPHINCSはステートレス署名）</p>
+            <p>同一の公開鍵，秘密鍵から1つ以上の署名をするにはどうすればいいでしょうか。</p>
+<p>この記事では，ハッシュベース署名方式がどのように構築されるか確認するのが最終目標です。</p>
+<p>One-time Signatures(OTS)だけでなくFew-times signatures(FTS)でも可能です。</p>
+<h1 id="hors">HORS</h1>
+<p>HORSは，2002年にReyzin親子によって発表された<a href="https://www.cs.bu.edu/~reyzin/papers/one-time-sigs.pdf" target="_blank" rel="noopener">Biba(Bins and Balls)を更新したもの</a>から作られています。</p>
+<p>まず初めに，OTSのように一方向性関数に基づいて秘密鍵となる整数のリストを生成します。そしてそのあとそれぞれについてハッシングし，公開鍵を生成します。</p>
+<p>ただし，署名するとき，メッセージ<span class="math inline">\(m\)</span>に対応したインデックスのリストを与えるための<b>選択関数</b><span class="math inline">\(S\)</span>が必要となります。</p>
+<p>次の例では，パラメータ<span class="math inline">\(t=5\)</span>，<span class="math inline">\(k=2\)</span>として進めます。 このとき，メッセージ<span class="math inline">\(m\)</span>の小数値が10より小さくなるように署名できます。 また，（選択関数<span class="math inline">\(S\)</span>は2つのインデックスを出力するので）秘密鍵の長さは5であり，署名の長さは2となります。</p>
+<p><a href="画像挿入すること"></a></p>
+<p>良い関数（全単射関数）<span class="math inline">\(S\)</span>を使用すると，秘密鍵から生成される同一の要素で二つのメッセージに署名することは<b>不可能</b>です。しかし，その2つの署名のあとは，新しいものを偽造するのはかなり簡単なはずです。2個目に構築するのはHORS署名方式と呼ばれるものです。これは，一方向性関数の代わりに&quot;サブセット・レジリエント&quot;関数に基づいています。選択関数<span class="math inline">\(S\)</span>は，<span class="math inline">\(H(m_2) \subseteq H(m_1)\)</span>となるような2つのメッセージ<span class="math inline">\(m_1\)</span>，<span class="math inline">\(m_2\)</span>を見つけることが不可能である関数<span class="math inline">\(H\)</span>に置き換えることができます。</p>
+<p>それよりも，複数回署名可能な方式にしたい場合，署名者が<span class="math inline">\(r\)</span>個の署名を与えたとき，<span class="math inline">\(H(m&#39;) \subseteq H(m_1) \cup \cdots \cup H(m_r)\)</span>となるメッセージ<span class="math inline">\(m&#39;\)</span>を見つけることは不可能であるべきです。これが，実際には&quot;サブセット・レジリエント&quot;の定義となります。</p>
+<p>選択関数<span class="math inline">\(H\)</span>は，攻撃者が多項式時間で，前の式を確認できる<span class="math inline">\(r+1\)</span>個のメッセージの集合を（たとえ小さな確率であっても）見つけられない場合，r-サブセット・レジリエントです。 定義に関する部分をそのまま引用します。</p>
+<blockquote>
+<p>Let <span class="math inline">\(\mathcal{H}=\{H_{i,t,k} \}\)</span> be a family of functions, where <span class="math inline">\(\{H_{i,t,k} \}\)</span> maps an input of arbitrary length to a subset of size at most <span class="math inline">\(k\)</span> of the set <span class="math inline">\(\{0,1,\cdots,t-1 \}\)</span>.(Note that for each <span class="math inline">\(t\)</span> and <span class="math inline">\(k\)</span>,  contains a number of fuctions, which are indexed by <span class="math inline">\(i\)</span>). Moreover, assume that there is a polynomial-time algorithm that, given <span class="math inline">\(i, 1^t,1^k\)</span> and <span class="math inline">\(M\)</span>, compute <span class="math inline">\(H_{i,t,k}(M)\)</span>. <br><br> <b>Definition 1.</b> We say that <span class="math inline">\(\mathcal{H}\)</span> is <span class="math inline">\(\it{r-subset-resilient}\)</span> if, for every probablistic polynominal-time adversary A,<br> <span class="math display">\[
+\underset{i}{\text{Pr}}
+[
+(M_1,M_2,...,M_{r+1}) \gets A(i,1^t,1^k) \\
+\text{s.t.} \,\, H_{i,t,k}(M_{r+1})\subseteq 
+\underset{j=1}{\overset{r}{\cup}} H_{i,t,k}(M_j)
+] &lt; negl(t,k).
+\]</span> Fix a distribution <span class="math inline">\(D\)</span> on the space of all inputs to <span class="math inline">\(H\)</span> (i.e., on the space of messages).</p>
+</blockquote>
+<p>しかし，ここでは選択関数は全単射ではないので，元に戻すのは難しいのです。 したがってメッセージの一つ前の署名を知っていても，どのメッセージがそれらのインデックスを使用するのかわかりません。</p>
+<p>これは，理論上はランダムなオラクルを使用して，実際にはハッシュ関数を使用して行われます。これが，HORS(=<b>Hash to Obtain Random Subset</b>)と呼ばれる所以です。</p>
+<p>他にも選択関数はあります。 メッセージ<span class="math inline">\(m\)</span>を署名するために，次の手順をふみます。</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(h=Hash(m)\)</span></li>
+<li><span class="math inline">\(h\)</span>を<span class="math inline">\(h_1,...,h_k\)</span>に分割する</li>
+<li>それぞれの<span class="math inline">\(h_j\)</span>を整数<span class="math inline">\(i_j\)</span>と解釈する</li>
+<li>署名は<span class="math inline">\(sk_{i_1},...,sk_{i_k}\)</span>となる</li>
+</ol>
 
             
 
@@ -290,7 +269,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/17/hash-based-signatures-2/" data-tooltip="ハッシュベース署名方式（２）　Few-times Signatures" aria-label="前: ハッシュベース署名方式（２）　Few-times Signatures">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/17/hash-based-signatures-3/" data-tooltip="ハッシュベース署名方式（３）　Many-times Signatures" aria-label="前: ハッシュベース署名方式（３）　Many-times Signatures">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前</span>
@@ -299,7 +278,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Get-ready-for-qrl-launch-ja/" data-tooltip="Get ready for QRL launch! (日本語訳)" aria-label="次: Get ready for QRL launch! (日本語訳)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/12/hash-based-signatures-1/" data-tooltip="ハッシュベース署名方式（１）　One-time Signatures" aria-label="次: ハッシュベース署名方式（１）　One-time Signatures">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">次</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -317,7 +296,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Facebookで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/17/hash-based-signatures-2/" title="Facebookで共有">
                     <i class="fa fa-facebook-official" aria-hidden="true"></i>
                 </a>
             </li>
@@ -325,7 +304,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Twitterで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/17/hash-based-signatures-2/" title="Twitterで共有">
                     <i class="fa fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -333,7 +312,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Google+で共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/17/hash-based-signatures-2/" title="Google+で共有">
                     <i class="fa fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -376,7 +355,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/17/hash-based-signatures-2/" data-tooltip="ハッシュベース署名方式（２）　Few-times Signatures" aria-label="前: ハッシュベース署名方式（２）　Few-times Signatures">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/17/hash-based-signatures-3/" data-tooltip="ハッシュベース署名方式（３）　Many-times Signatures" aria-label="前: ハッシュベース署名方式（３）　Many-times Signatures">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前</span>
@@ -385,7 +364,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Get-ready-for-qrl-launch-ja/" data-tooltip="Get ready for QRL launch! (日本語訳)" aria-label="次: Get ready for QRL launch! (日本語訳)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/12/hash-based-signatures-1/" data-tooltip="ハッシュベース署名方式（１）　One-time Signatures" aria-label="次: ハッシュベース署名方式（１）　One-time Signatures">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">次</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -403,7 +382,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Facebookで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/17/hash-based-signatures-2/" title="Facebookで共有">
                     <i class="fa fa-facebook-official" aria-hidden="true"></i>
                 </a>
             </li>
@@ -411,7 +390,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Twitterで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/17/hash-based-signatures-2/" title="Twitterで共有">
                     <i class="fa fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -419,7 +398,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Google+で共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/17/hash-based-signatures-2/" title="Google+で共有">
                     <i class="fa fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -446,7 +425,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/12/hash-based-signatures-1/">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/17/hash-based-signatures-2/">
                     <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Facebookで共有</span>
                 </a>
             </li>
@@ -454,7 +433,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/12/hash-based-signatures-1/">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/17/hash-based-signatures-2/">
                     <i class="fa fa-twitter" aria-hidden="true"></i><span>Twitterで共有</span>
                 </a>
             </li>
@@ -462,7 +441,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/12/hash-based-signatures-1/">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/17/hash-based-signatures-2/">
                     <i class="fa fa-google-plus" aria-hidden="true"></i><span>Google+で共有</span>
                 </a>
             </li>

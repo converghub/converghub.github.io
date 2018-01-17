@@ -191,8 +191,243 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/17/hash-based-signatures-4/">
+                            ハッシュベース署名方式（４）　XMSSとSPHINCS
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-17T14:02:49+09:00">
+	
+		    2018/01/17
+    	
+    </time>
+    
+        <span>カテゴリー </span>
+        
+    <a class="category-link" href="/categories/暗号通貨/">暗号通貨</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>前回までの記事（１）～（３）を踏まえて，実際にの署名方式を見ていきます。</p>
+<p><b>PQCrypto</b>が<a href="http://pqcrypto.eu.org/docs/initial-recommendations.pdf" target="_blank" rel="noopener">耐量子として推奨される署名方式についてリリース</a>しています。 二つの耐量子アルゴリズムは，<b>XMSS</b>と<b>SPHINCS</b>です。 以下，引用です。</p>
+<blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li>Public-key signatures<br><br> Similar to encryption, currently used signatures are based on problems that become easy to solve with a quantum computer. Signatures use cryptographic hash functions in order to hash the message and then sign the hash. Hash-based signatures use nothing but such a hash function and thus assume the minimum requirement necessary to build signatures. PQCRYPTO recommends the following two hash-based systems to achieve <span class="math inline">\(2^{128}\)</span> post-quantum security:<br><br></li>
+</ol>
+<ul>
+<li><p>XMSS [7] with any of the parameters specified in [11]. XMSS requires maintaining a state.</p></li>
+<li><p>SPHINCS-256 [5]. SPHINCS is stateless.</p></li>
+</ul>
+<p>Example of another choice under evaluation: the HFEv- [15] multivariate-quadratic signature system.</p>
+</blockquote>
+<p>XMSSはステートフル署名方式，SPHINCSはステートレス署名方式です。</p>
+<h1 id="xmss">XMSS</h1>
+<p>XMSS(<b>eXtended Merkle Signature Scheme</b>)は<a href="https://eprint.iacr.org/2011/484.pdf" target="_blank" rel="noopener">2011年に発表</a>され，<a href="https://datatracker.ietf.org/doc/draft-irtf-cfrg-xmss-hash-based-signatures/" target="_blank" rel="noopener">インターネット上のドラフト</a>は2015年にできました。</p>
+<p>いくつかの点を除いて，Merkle木のような構成になっています。XMSS木には，親ノードがハッシングされる前に子ノードへXORされるマスクがあります。全てのノードでマスクは異なります。</p>
+<p><a href="画像とってくること"></a></p>
+<p>二つ目の特徴は，XMSS木の葉がOTS署名公開鍵のハッシュではなく，L木と呼ばれる別の木のルートであることです。</p>
+<p>L木の葉の中には，WOTS+公開鍵の要素が格納されています。 WOTS+公開鍵をなぜ木に格納するのかはHuelsingが論文内で書いてあるので引用します。</p>
+<blockquote>
+<p>The tree is not used to store a WOTS public key but to hash it in a way that we can prove that a second-preimage resistant hash function suffices (instead of a collision resistant one).<br> 意訳：この木はWOTS公開鍵を格納するために使用されるのではなく，（衝突耐性の代わりに）第二原像攻撃耐性のあるハッシュ関数が十分であることを証明できるようにハッシングするために使われます。</p>
+</blockquote>
+<h1 id="sphincs">SPHINCS</h1>
+<p>SPHINCSはステートフル署名です。PHINCSは多くの木で構成されています。</p>
+<p><a href=""></a></p>
+<ul>
+<li><p>各ノードは一つ前のノードとレベルビットマスクを連結しXORしたハッシュです。</p></li>
+<li><p>公開鍵はビットマスクされたルートハッシュです。</p></li>
+<li><p>木の葉は，WOTS+ L木の圧縮された公開鍵です。</p></li>
+</ul>
+<p>ビットマスク部分は，SPHINCSのハッシュ木（レベルごとに一意のマスク）のように見える点を除いて，前述のXMSS L-treeと同じです。</p>
+<p>1つのWOTSを含む葉は，もう一つの木に署名することが可能です。 4つのSPHINCS木の2番目のレイヤーは，WOTS+公開鍵を自分の葉に含んでいます。 最初に設定したパラメータの通りに進んでいき，最後のレイヤー0に到達すると，WOTS+署名はほかのSPHINCS木ではなくて，HORS木に署名します。</p>
+<p><a href="SPHINCS画像"></a></p>
+<p>HORST木やHORS木はL木と同様ですが，今回はWOTSの代わりにHORS FTSが含まれています。もし同じHORS鍵を使ってメッセージに署名しても問題ないので，それらを使ってメッセージに署名し，これが署名方式のセキュリティを向上させます。</p>
+<p>以下は，WOTS+ L木のイメージ図（次のSPHINCS木への署名としてそれらを描くもの）で，メッセージへのパスを一つだけ示したものです。SPHINCSの論文から引用します。</p>
+<p><a href="Virtual%20Structure%20of%20a%20SPHINCS%20signature"></a></p>
+<p>メッセージMに署名するときには，最初にMと&quot;ランダムな&quot;インデックスで&quot;ランダム化された&quot;ハッシュを作成します（PHINCSのすべてが確定的にPRFで計算されるので，ランダムを強調して書いています）。インデックスは，Mのランダム化されたハッシュに署名するために，HORSTが何を選択するかを示しています。これがステートフルではなくなる方法です：メッセージに従って決定論的にインデックスを選ぶことによります。同じメッセージに再度署名する場合は，同じHORSTを使用する必要があります。異なる2つのメッセージに署名するには，2つの異なるHORSTを使用する必要があります。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/01/17/hash-based-signatures-4/#post-footer" class="postShorten-excerpt_link link">
+                                コメント・シェア
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/01/17/hash-based-signatures-3/">
+                            ハッシュベース署名方式（３）　Many-times Signatures
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-17T13:21:47+09:00">
+	
+		    2018/01/17
+    	
+    </time>
+    
+        <span>カテゴリー </span>
+        
+    <a class="category-link" href="/categories/暗号通貨/">暗号通貨</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>前回までにOTSとFTSを見てきました。 次は，ハッシュ関数に基づいた実用的な署名体系はどのようにして構築されるかを見ていきたいと思います。 多くの回数使うことが出来て，理想的には何回も使うことができる署名方式です。</p>
+<h1 id="dumb木">Dumb木</h1>
+<p>最初に考えられるのはOTSを束にして使うことです（OTSは自分が使いたいもの）。 初めて署名する場合は，最初のOTS鍵ペアを使用し，二度とと使ってはいけません。二回目に何かに署名したい場合は，二番目のOTS鍵ペアを使用し，それもまた二度と使ってはいけません。これを繰り返すと最終的にどうなるかはよくわかると思います。公開鍵はすべてのOTS公開鍵で構成されるため，とても悪いことになるでしょう（その署名方式をたくさん使用することにしたい場合，かなり多くのOTS公開鍵を持つことになります）。</p>
+<p>秘密鍵の記憶量を減らす一つの方法は，秘密鍵を生成するための疑似乱数生成器でシードをしようすることです。この方法では，秘密鍵を保存する必要はなく，必要なのはシードのみです。</p>
+<p>しかしこれでも，公開鍵が大きくなりすぎるので実用的ではありません。</p>
+<h1 id="merkle木">Merkle木</h1>
+<p>OTS公開鍵すべてを，一つのメインの公開鍵にリンクする非常に簡単な方法が一つあります。それは<b>Merkle木</b>を利用することです。これは<a href="http://discovery.csc.ncsu.edu/Courses/csc774-F11/reading-assignments/Merkle-Tree.pdf" target="_blank" rel="noopener">Merkleによって1979年に考案された解決策</a>で，発表はその10年後でした。</p>
+<p>簡単に定義すると次のようになります。 Merkle木は，すべてのノードがその子ノードのハッシュであり，ルートが公開鍵であり，葉がOTS公開鍵のハッシュである基本的な２分木です。</p>
+<p><a href="画像割愛"></a></p>
+<p>最初にこの木を使って何かに署名するとしましょう。 最初のOTS公開鍵(A)を使用し，それを二度と使いません。次にBのOTS公開鍵，次にCの，最後にDのOTS公開鍵を使用します。したがってこの木では，合計4つのメッセージに署名することができます。木が大きければ，より多くのメッセージに署名することができるのがわかりますね。</p>
+<p>これの良いところは，公開鍵が木のルートのみで構成されていて，何かに署名するたびにその署名が少数のハッシュで構成されていることです。これが認証パスとなります。</p>
+<p>この例では，OTS鍵(A)による署名は（<span class="math inline">\(1\)</span>，署名，公開鍵A，認証パス）となります。</p>
+<ul>
+<li>1は署名の葉の<span class="math inline">\({\it 番号}\)</span>です。繰り返して覚えておかなければいけないことは，葉のOTSを二度と使ってはいけないことです。このことが署名方式を<b>ステーフル</b>にします。</li>
+<li><span class="math inline">\({\it 署名}\)</span>はOTSの公開された秘密鍵です。</li>
+<li><span class="math inline">\({\it 公開鍵}\)</span>は，署名を検証するためのOTS公開鍵です。</li>
+<li><span class="math inline">\({\it 認証パス}\)</span>は，ルート（主となる公開鍵）を再計算することを可能にするノードのリスト（ハッシュのリスト）です。</li>
+</ul>
+<p>認証パスについて考えてみます。 前の例を取り上げると，最初のOTS鍵(A)で何かを署名した後の認証パスがハイライトされています。</p>
+<p><a href="認証パスの画像はここ"></a></p>
+<p>OTS公開鍵と二つのハッシュ（Aの葉からルートまでの経路にあるすべての隣接ノード）とで，主となる公開鍵を計算できることが分かります。したがって，これが実際に，その主となる公開鍵に由来する署名であることを検証することができます。</p>
+<p>このテクニックのおかげで，私たちは，主となる公開鍵を検証するために全てのOTS公開鍵を知る必要はありません。これにより，空間も時間も節約されることになります。</p>
+<p>以上がMerkleの署名方式の簡単なイメージです。</p>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/01/17/hash-based-signatures-3/#post-footer" class="postShorten-excerpt_link link">
+                                コメント・シェア
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
+                        <a class="link-unstyled" href="/2018/01/17/hash-based-signatures-2/">
+                            ハッシュベース署名方式（２）　Few-times Signatures
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-17T12:03:55+09:00">
+	
+		    2018/01/17
+    	
+    </time>
+    
+        <span>カテゴリー </span>
+        
+    <a class="category-link" href="/categories/暗号通貨/">暗号通貨</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>同一の公開鍵，秘密鍵から1つ以上の署名をするにはどうすればいいでしょうか。</p>
+<p>この記事では，ハッシュベース署名方式がどのように構築されるか確認するのが最終目標です。</p>
+<p>One-time Signatures(OTS)だけでなくFew-times signatures(FTS)でも可能です。</p>
+<h1 id="hors">HORS</h1>
+<p>HORSは，2002年にReyzin親子によって発表された<a href="https://www.cs.bu.edu/~reyzin/papers/one-time-sigs.pdf" target="_blank" rel="noopener">Biba(Bins and Balls)を更新したもの</a>から作られています。</p>
+<p>まず初めに，OTSのように一方向性関数に基づいて秘密鍵となる整数のリストを生成します。そしてそのあとそれぞれについてハッシングし，公開鍵を生成します。</p>
+<p>ただし，署名するとき，メッセージ<span class="math inline">\(m\)</span>に対応したインデックスのリストを与えるための<b>選択関数</b><span class="math inline">\(S\)</span>が必要となります。</p>
+<p>次の例では，パラメータ<span class="math inline">\(t=5\)</span>，<span class="math inline">\(k=2\)</span>として進めます。 このとき，メッセージ<span class="math inline">\(m\)</span>の小数値が10より小さくなるように署名できます。 また，（選択関数<span class="math inline">\(S\)</span>は2つのインデックスを出力するので）秘密鍵の長さは5であり，署名の長さは2となります。</p>
+<p><a href="画像挿入すること"></a></p>
+<p>良い関数（全単射関数）<span class="math inline">\(S\)</span>を使用すると，秘密鍵から生成される同一の要素で二つのメッセージに署名することは<b>不可能</b>です。しかし，その2つの署名のあとは，新しいものを偽造するのはかなり簡単なはずです。2個目に構築するのはHORS署名方式と呼ばれるものです。これは，一方向性関数の代わりに&quot;サブセット・レジリエント&quot;関数に基づいています。選択関数<span class="math inline">\(S\)</span>は，<span class="math inline">\(H(m_2) \subseteq H(m_1)\)</span>となるような2つのメッセージ<span class="math inline">\(m_1\)</span>，<span class="math inline">\(m_2\)</span>を見つけることが不可能である関数<span class="math inline">\(H\)</span>に置き換えることができます。</p>
+<p>それよりも，複数回署名可能な方式にしたい場合，署名者が<span class="math inline">\(r\)</span>個の署名を与えたとき，<span class="math inline">\(H(m&#39;) \subseteq H(m_1) \cup \cdots \cup H(m_r)\)</span>となるメッセージ<span class="math inline">\(m&#39;\)</span>を見つけることは不可能であるべきです。これが，実際には&quot;サブセット・レジリエント&quot;の定義となります。</p>
+<p>選択関数<span class="math inline">\(H\)</span>は，攻撃者が多項式時間で，前の式を確認できる<span class="math inline">\(r+1\)</span>個のメッセージの集合を（たとえ小さな確率であっても）見つけられない場合，r-サブセット・レジリエントです。 定義に関する部分をそのまま引用します。</p>
+<blockquote>
+<p>Let <span class="math inline">\(\mathcal{H}=\{H_{i,t,k} \}\)</span> be a family of functions, where <span class="math inline">\(\{H_{i,t,k} \}\)</span> maps an input of arbitrary length to a subset of size at most <span class="math inline">\(k\)</span> of the set <span class="math inline">\(\{0,1,\cdots,t-1 \}\)</span>.(Note that for each <span class="math inline">\(t\)</span> and <span class="math inline">\(k\)</span>,  contains a number of fuctions, which are indexed by <span class="math inline">\(i\)</span>). Moreover, assume that there is a polynomial-time algorithm that, given <span class="math inline">\(i, 1^t,1^k\)</span> and <span class="math inline">\(M\)</span>, compute <span class="math inline">\(H_{i,t,k}(M)\)</span>. <br><br> <b>Definition 1.</b> We say that <span class="math inline">\(\mathcal{H}\)</span> is <span class="math inline">\(\it{r-subset-resilient}\)</span> if, for every probablistic polynominal-time adversary A,<br> <span class="math display">\[
+\underset{i}{\text{Pr}}
+[
+(M_1,M_2,...,M_{r+1}) \gets A(i,1^t,1^k) \\
+\text{s.t.} \,\, H_{i,t,k}(M_{r+1})\subseteq 
+\underset{j=1}{\overset{r}{\cup}} H_{i,t,k}(M_j)
+] &lt; negl(t,k).
+\]</span> Fix a distribution <span class="math inline">\(D\)</span> on the space of all inputs to <span class="math inline">\(H\)</span> (i.e., on the space of messages).</p>
+</blockquote>
+<p>しかし，ここでは選択関数は全単射ではないので，元に戻すのは難しいのです。 したがってメッセージの一つ前の署名を知っていても，どのメッセージがそれらのインデックスを使用するのかわかりません。</p>
+<p>これは，理論上はランダムなオラクルを使用して，実際にはハッシュ関数を使用して行われます。これが，HORS(=<b>Hash to Obtain Random Subset</b>)と呼ばれる所以です。</p>
+<p>他にも選択関数はあります。 メッセージ<span class="math inline">\(m\)</span>を署名するために，次の手順をふみます。</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(h=Hash(m)\)</span></li>
+<li><span class="math inline">\(h\)</span>を<span class="math inline">\(h_1,...,h_k\)</span>に分割する</li>
+<li>それぞれの<span class="math inline">\(h_j\)</span>を整数<span class="math inline">\(i_j\)</span>と解釈する</li>
+<li>署名は<span class="math inline">\(sk_{i_1},...,sk_{i_k}\)</span>となる</li>
+</ol>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/01/17/hash-based-signatures-2/#post-footer" class="postShorten-excerpt_link link">
+                                コメント・シェア
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/12/hash-based-signatures-1/">
-                            ハッシュベース署名方式（１）　ワンタイム署名
+                            ハッシュベース署名方式（１）　One-time Signatures
                         </a>
                     
                 </h1>
@@ -255,7 +490,7 @@
 <p>長い長い年月のあと，2011年に，Buchmann et alがWinternitz OTSのアップデートを公開して，鍵でパラメータ化された族を利用して新しいWOTSの変種を紹介した。MACと呼ばれている。</p>
 <p>MACで使用される鍵のリストが秘密鍵で，メッセージは何度MACを反復するかを指定することになる。以前の出力が鍵を置き換えるため固有の反復であり，常に同じ公開された入力を使用する。</p>
 <p>メッセージ<span class="math inline">\(M=1011_2\)</span>があり，WOTSの変種が3を基底とするメッセージとして動作するとする（実際には任意の基底<span class="math inline">\(w\)</span>でも大丈夫）。<span class="math inline">\(M=(M_0,M_1,M_2)=(1,0,2)\)</span>は<span class="math inline">\(102_3\)</span>を表すとする。</p>
-<p>これを署名するには，<span class="math inline">\((f^1_{sk_1}(x)=f_{sk_1}(x),\, f^0_{sk_2}(x)=sk_2 ,\, f^2_{sk_3}(x)=f_{\{f_{sk_3(x)}\}}(x) )\)</span>を公開すればいい。</p>
+<p>これを署名するには，<span class="math inline">\((f^1_{sk_1}(x)=f_{sk_1}(x),\, f^0_{sk_2}(x)=sk_2 ,\, f^2_{sk_3}(x)=f_{\{f^1_{sk_3(x)}\}}(x) )\)</span>を公開すればいい。</p>
 <p>まだメッセージに署名が必要なチェックサムが適用されるが，詳細割愛。 チェックサムにより，公開鍵の中で<span class="math inline">\(M_2=2\)</span>と知られていても関係がない。</p>
 <p>直感的に，連鎖していくことで公開鍵により良いセキュリティを提供することになる。</p>
 <h1 id="winternitz-otswots"><a href="https://huelsing.files.wordpress.com/2013/05/wotsspr.pdf" target="_blank" rel="noopener">Winternitz OTS+(WOTS+)</a></h1>
