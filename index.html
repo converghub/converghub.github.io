@@ -190,6 +190,105 @@
             <div class="postShorten-header">
                 <h1 class="postShorten-title" itemprop="headline">
                     
+                        <a class="link-unstyled" href="/2018/01/18/wots-jp/">
+                            W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time itemprop="datePublished" datetime="2018-01-18T20:34:42+09:00">
+	
+		    2018/01/18
+    	
+    </time>
+    
+        <span>カテゴリー </span>
+        
+    <a class="category-link" href="/categories/暗号通貨/">暗号通貨</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content" itemprop="articleBody">
+                    <p>この記事は，論文のうち，必要な部分を抜粋し和訳したものです。</p>
+<h1 id="the-winternitz-one-time-signature-scheme">The Winternitz One-Time Signature Scheme</h1>
+<p>このセクションではW-OTS<span class="math inline">\(^+\)</span>について書きます。W-OTSのコアとなるアイデアは，ランダムな入力から始まる特定の数の関数の連鎖を使用することです。これらのランダムな入力は秘密鍵です。公開鍵は連鎖の最終の出力，つまり，連鎖の最後から構成されます。署名は，メッセージを各関数チェーンの一つの中間地にマッピングすることにより計算されます。以前のW-OTSのすべての変種は，単に使用される関数を反復した関数の連鎖（[BDE+11]の場合は関数族）によって構築されています。それとは対照的に，W-OTS<span class="math inline">\(^+\)</span>では，使用されているハッシュ関数族に衝突耐性を要求することなく厳密なセキュリティ証明を可能にする，特別な反復モードを使用しています。いくつかの準備から始めます。そのあとW-OTS<span class="math inline">\(^+\)</span>について話します。</p>
+<h2 id="signature-scheme">Signature Scheme</h2>
+<p>ここで，いくつかの表記法を固め，適応型選択メッセージ攻撃のもとでデジタル署名方式と存在的偽造不可能性を定義します(EU-CMA)。 この論文では，<span class="math inline">\(x\)</span>が一様分布を用いて集合<span class="math inline">\(\mathcal{X}\)</span>からランダムに選択されるとき，<span class="math inline">\(x \overset{\$}{\gets} \mathcal{X}\)</span>と書く。さらに log は <span class="math inline">\(\text{log}_2\)</span>とします。</p>
+<p><b>Digital Signature schmes.</b><span class="math inline">\(\,\,\,\,\,\)</span> <span class="math inline">\(\mathcal{M}\)</span>をメッセージ空間とします。デジタル署名方式Dss=(<b>Kg</b>, <b>Sign</b>, <b>Vf</b>)は，確率的多項式アルゴリズムの3つです。</p>
+<ul>
+<li><p>Kg(1<span class="math inline">\(^n\)</span>) セキュリティパラメータ<span class="math inline">\(1^n\)</span>が入力されると，秘密署名鍵<b>sk</b>と公開検証鍵<b>pk</b>を出力する。</p></li>
+<li><p>Sign(sk, <span class="math inline">\(M\)</span>) <span class="math inline">\(M \in \mathcal{M}\)</span>ならば，<span class="math inline">\(M\)</span>に対して<b>sk</b>の下で署名<span class="math inline">\(\sigma\)</span>を出力する。</p></li>
+<li><p>Vf(<b>pk</b>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(M\)</span>) <span class="math inline">\(\sigma\)</span>が<b>pk</b>の下で<span class="math inline">\(M\)</span>の有効な署名ならば1を出力する。</p></li>
+</ul>
+<p>次のようになります。 <span class="math inline">\(\forall\)</span> (<b>pk</b>, <b>sk</b>) <span class="math inline">\(\gets\)</span> Kg(1<span class="math inline">\(^n\)</span>) <span class="math inline">\(\,\,\)</span>,<span class="math inline">\(\,\,\)</span> <span class="math inline">\(\forall\)</span> (<span class="math inline">\(M\in \mathcal{M}\)</span>) <span class="math inline">\(\,\,\)</span>:<span class="math inline">\(\,\,\)</span> <b>Vf</b>(<b>pk</b>，<b>Sign</b>(<b>sk</b>,<span class="math inline">\(M\)</span>),<span class="math inline">\(M\)</span>)=1。</p>
+<p><b>EU-CMA Security.</b><span class="math inline">\(\,\,\,\,\,\)</span> デジタル署名方式の標準的なセキュリティの考え方は，適応型選択メッセージ攻撃（EU-CMA）の下での存在的偽造不可能性（EU-CMA）であり，以下の思考実験を使用して定義されます。DSS(1<span class="math inline">\(^n\)</span>)とは，セキュリティパラメータ<span class="math inline">\(n\)</span>を持つ署名方式を意味します。 <br></p>
+<p><b>Experiment.</b><span class="math inline">\(\,\,\,\,\,\)</span> <span class="math inline">\(\text{Exp}^{\text{EU-CMA}}_{\text{Dss}(1^n)}(\mathcal{A})\)</span> <br> 　　　(<b>sk</b>,<b>pk</b>) <span class="math inline">\(\,\,\gets\,\,\)</span> Kg(1<span class="math inline">\(^n\)</span>) <br> 　　　(<span class="math inline">\(M\)</span><em>, <span class="math inline">\(\sigma\)</span></em>) <span class="math inline">\(\,\,\gets\,\,\)</span> <span class="math inline">\(\mathcal{A}^{\text{Sign(sk,}\cdot)} (\textbf{pk})\)</span> <br> 　　　<span class="math inline">\(\{(M_i,\sigma_i) \}^q_1\)</span>を(,<span class="math inline">\(\cdot\)</span>)の問い合わせ／回答ペアとする<br> 　　　(,<span class="math inline">\(M*\)</span>,<span class="math inline">\(\sigma\)</span>*)=1かつ<span class="math inline">\(M^{*} \notin \{M_i\}^q_1\)</span>ならば1を返す<br> <br> 上記の思考実験における攻撃者<span class="math inline">\(\mathcal{A}\)</span>の成功確率については，次のように書きます。 <span class="math display">\[
+\text{Succ}^{\text{EU-CMA}}_{\text{Dss}(1^n)}(\mathcal{A})
+= \text{Pr} \left[\textbf{Exp}^{\text{EU-CMA}}_{\text{Dss}(1^n)}(\mathcal{A})=1  \right]
+\]</span> これを使用して，次のようにEU-CMAを定義します。 <br> <br> <b>Definition 1 (EU-CMA).</b><span class="math inline">\(\,\,\,\,\,\)</span> <span class="math inline">\(n,t,p \in \mathbb{N}\)</span>，<span class="math inline">\(q=\text{poly}(n)\)</span>，Dssをデジタル署名方式とする。 DssがEU-CMA安全とは，上記思考実験で<b>Sign</b>へ<span class="math inline">\(q\)</span>個の問い合わせをして，時間<span class="math inline">\(t\)</span>以内に， 考えられるすべての攻撃者<span class="math inline">\(\mathcal{A}\)</span>のうち，最大の成功確率<span class="math inline">\(\textbf{InSec}^{\text{EU-CMA}}(\text{Dss}(1^n);t,q)\)</span>が<span class="math inline">\(n\)</span>において無視できるとすると， <span class="math display">\[
+\text{InSec}^{\text{EU-CMA}}(\text{DSS}(1^n);t,q) \overset{def}{=} 
+\underset{\mathcal{A}}{\text{max}} \{ \text{Succ}^{\text{EU-CMA}}_{\text{Dss}(1^n)}(\mathcal{A}) \}
+= negl(n)
+\]</span> EU-CMA安全なワンタイム署名方式（OTS）は， 攻撃者のオラクルへの問い合わせの数が1に制限されている限り，すなわち<span class="math inline">\(q=1\)</span>である限りEU-CMA安全なDssです。</p>
+<h2 id="w-ots">W-OTS+</h2>
+さてW-OTS<span class="math inline">\(^+\)</span>について紹介します。以前のすべてのW-OTSの変種と同じように， W-OTS<span class="math inline">\(^+\)</span>はセキュリティパラメータ<span class="math inline">\(n\in\mathbb{N}\)</span>，メッセージ長<span class="math inline">\(m\)</span>，そして時間とメモリのトレードオフを決定するWinternitzパラメータ<span class="math inline">\(w \in \mathbb{N}, w &gt; 1\)</span>によってパラメタライズされます。最後の2個のパラメータは次のものを計算するのに使用されます。 <span class="math display">\[
+l_1 = \left\lceil \frac{m}{\text{log}(w)} \right\rceil,
+\,\,\,
+l_2 = \left\lfloor \frac{\text{log}(l_1(w-1))}{\text{log}(w)} \right\rfloor + 1,
+\,\,\,
+l = l_1 + l_2
+\]</span> さらに，W-OTS<span class="math inline">\(^+\)</span>は鍵空間<span class="math inline">\(\mathcal{K}_n\)</span>で関数の族<span class="math inline">\(\mathcal{F}_n\,\,\{f_k:\{0,1\}^n \to \{0,1\}^n| k\in \mathbb{K}_n \}\)</span>を使用します。読者は，圧縮無しの暗号学的なハッシュ関数だと考えてもらって大丈夫です。 <span class="math inline">\(\mathcal{F}_n\)</span>を使って，次の連鎖関数を定義します。 <br> <br> <span class="math inline">\(c^i_k(x,\textbf{r})\)</span>：入力値<span class="math inline">\(x\in \{0,1\}^n\)</span>，イテレーションカウンタ<span class="math inline">\(i\in \mathbb{N}\)</span>，鍵<span class="math inline">\(k\in \mathcal{K}\)</span>，ランダム化要素<span class="math inline">\(\textbf{r}=(r_1,...,r_j)\in \{0,1 \}^{n\times j}(j\geq i)\)</span>とすると， 連鎖関数は次のように働きます。<span class="math inline">\(i=0\)</span>のとき，<span class="math inline">\(c\)</span>は<span class="math inline">\(x\)</span>を返します(<span class="math inline">\(c^0_k(x,\textbf{r},x)\)</span>)。<span class="math inline">\(i&gt;0\)</span>のとき，再帰的に定義します。 <span class="math display">\[
+c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
+\]</span> つまり，各ラウンドで，関数は最初に中間値とビットマスク<span class="math inline">\(r\)</span>のビットごとのXORをとり， その結果に対して<span class="math inline">\(f_k\)</span>を評価します。の部分集合<span class="math inline">\(r_a,...,r_b\)</span>として，<span class="math inline">\(\textbf{r}_a,b\)</span>を書きます。<span class="math inline">\(b&lt;a\)</span>の場合<span class="math inline">\(\textbf{r}_{a,b}\)</span>をからの文字列と定義します。パラメータ<span class="math inline">\(m\)</span>，<span class="math inline">\(w\)</span>，そして関数の族<span class="math inline">\(\mathcal{F}_n\)</span>は既知であると仮定します。さて，W-OTS<span class="math inline">\(^+\)</span>の三つのアルゴリズムについて記載します： <br> <br> - <span class="math inline">\(\textit{鍵生成アルゴリズム}\,\,\,\,\,\)</span> (Kg(<span class="math inline">\(1^n\)</span>))：<br> 単項のセキュリティパラメータ<span class="math inline">\(n\)</span>を入力として，鍵生成アルゴリズムは<span class="math inline">\(l+w-1\)</span>個の<span class="math inline">\(n\)</span>ビットの文字列をランダムに一様に選択します。秘密鍵<span class="math inline">\(\textbf{sk}=(\text{sk}_1,...,\text{sk}_l)\)</span>は，最初の<span class="math inline">\(l\)</span>個のランダムなビット列から構成されています。残りの<span class="math inline">\(w-1\)</span>個のビット列は，<span class="math inline">\(c\)</span>のためのランダム化要素<span class="math inline">\(\textbf{r}=(r_1,...,r_{w-1})\)</span>として使用されます。次に，<span class="math inline">\(\text{Kg}\)</span>はランダムに一様にファンクションキー<span class="math inline">\(k \overset{\$}{\gets} \mathcal{K}\)</span>を選択します。公開検証鍵<span class="math inline">\(\textbf{pk}\)</span>は次のように計算されます。 <span class="math display">\[
+    \text{pk} = (\text{pk}_0,\text{pk}_1,...,\text{pk}_l) =
+    ( (\textbf{r},k), c^{w-1}_k (\text{sk}_1,\textbf{r}) , \cdots,c^{w-1}_k (\text{sk}_l),\textbf{r} ). 
+\]</span> <br> <br> - <span class="math inline">\(\textit{署名アルゴリズム}\,\,\,\,\,\)</span> (Sign(<span class="math inline">\(M\)</span>,sk,))：<br> <span class="math inline">\(m\)</span>ビットのメッセージ<span class="math inline">\(M\)</span>，秘密署名鍵<span class="math inline">\(\textbf{sk}\)</span>およびランダム化要素<span class="math inline">\(\textbf{r}\)</span>を入力として，署名アルゴリズムはまず，<span class="math inline">\(M\)</span>の<span class="math inline">\(w\)</span>基底表現を計算します：<span class="math inline">\(M=(M_1...M_{l_1}) \,\,,\,\, M_i \in \{0,...,w-1 \}\)</span>。したがって，<span class="math inline">\(M\)</span>は自然数<span class="math inline">\(x\)</span>のバイナリ表現として扱われ，次に<span class="math inline">\(x\)</span>の<span class="math inline">\(w\)</span>変数表現が計算されます。<br> 次にチェックサムを以下のように計算します。 <span class="math display">\[
+    C = \sum^{l_1}_{i=1}(w-1-M_i)
+\]</span> そして，その<span class="math inline">\(w\)</span>基底表現<span class="math inline">\(C=(C_1,...,C_{l_2})\)</span>を計算します。<span class="math inline">\(C \leq l_1(w-1)\)</span>より，<span class="math inline">\(C\)</span>の<span class="math inline">\(w\)</span>基底表現は，たかだか<span class="math inline">\(l_2\)</span>です。 <span class="math inline">\(M\)</span>と<span class="math inline">\(C\)</span>の<span class="math inline">\(w\)</span>基底表現の連結である<span class="math inline">\(B=(b_1,...,b_l)=M\,\,||\,\,C\)</span>を設定します。 署名は次のように計算されます。 <span class="math display">\[
+\sigma = (\sigma_1,...,\sigma_l) = (c^{b_1}_k(\text{sk}_1,\textbf{r},...,c^{b_l}_k(\text{sk}_l),\textbf{r})).
+\]</span> チェックサムは，ある一つのメッセージに対応した<span class="math inline">\(b_i,0 &lt; i \leq l\)</span>が与えられたとき， 任意の他のメッセージに対応する<span class="math inline">\(b&#39;_{i} &lt; b_i\)</span>が少なくとも一つあることを保証することに留意してください。 <br> <br> - <span class="math inline">\(\textit{検証アルゴリズム}\,\,\,\,\,\)</span> (Vf(<span class="math inline">\(1^n\)</span>,<span class="math inline">\(M\)</span>,<span class="math inline">\(\sigma\)</span>,))：<br> バイナリ長<span class="math inline">\(m\)</span>のメッセージ<span class="math inline">\(M\)</span>，署名<span class="math inline">\(\sigma\)</span>，そして公開検証鍵<span class="math inline">\(\textbf{pk}\)</span>を入力として， 検証アルゴリズムは，上述したようにまず<span class="math inline">\(b_i,1\leq i \leq l\)</span>を計算します。 それから以下のように比較されます。
+<span class="math display">\[\begin{align}
+    \textbf{pk}
+    &amp; = (\textbf{pk}_0,\textbf{pk}_1,...,\textbf{pk}_l) \nonumber \\
+    &amp; \overset{?}{=}
+    ( (\textbf{r},k), c^{w-1-b_1}_k(\sigma_1, \textbf{r}_{b_1 + 1,w-1}),...,c^{w-1-b_l}_k(\sigma_l, \textbf{r}_{b_l + 1,w-1}) ) 
+    \nonumber
+\end{align}\]</span>
+<p>比較が成立する場合はtrueを返し，そうでない場合はfalseを返します。 <br> 3つのアルゴリズムすべての実行時間は，<span class="math inline">\(f_k\)</span>の<span class="math inline">\(lw\)</span>個の評価によって決まります。 署名と秘密鍵のサイズは，<span class="math inline">\(|\sigma|=|\textbf{sk}|=ln\)</span>ビットです。 公開鍵のサイズは<span class="math inline">\((l+w-1)n+|k|\)</span>ビットで，ここで<span class="math inline">\(|k|\)</span>は<span class="math inline">\(\mathcal{K}\)</span>の任意の要素を表すために必要なビット数です。</p>
+<h1 id="参考文献">参考文献</h1>
+<ul>
+<li>W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes</li>
+<li>[BDE$^+$11]:<br> Johannes Buchmann, Erik Dahmen, Sarah Ereth, Andreas Hulsing, and Markus Ruckert. On the security of the Winternitz one-time signature scheme. In A. Nitaj and D. Pointcheval, editors, <it>Africacrypt 2011</it>, volume 6737 of Lecture Notes in Computer Science, pages 363-378. Springer Berlin / Heidelberg, 2011.</li>
+</ul>
+
+                    
+                        
+
+                    
+                    
+                        <p>
+                            <a href="/2018/01/18/wots-jp/#post-footer" class="postShorten-excerpt_link link">
+                                コメント・シェア
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title" itemprop="headline">
+                    
                         <a class="link-unstyled" href="/2018/01/17/hash-based-signatures-4/">
                             ハッシュベース署名方式（４）　XMSSとSPHINCS
                         </a>
