@@ -21,7 +21,7 @@
 <meta property="og:site_name" content="Nest of Owl">
 <meta property="og:description" content="この記事は，論文のうち，必要な部分を抜粋し和訳したものです。 The Winternitz One-Time Signature Scheme このセクションではW-OTS\(^+\)について書きます。W-OTSのコアとなるアイデアは，ランダムな入力から始まる特定の数の関数の連鎖を使用することです。これらのランダムな入力は秘密鍵です。公開鍵は連鎖の最終の出力，つまり，連鎖の最後から構成されます">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2018-01-18T12:45:32.789Z">
+<meta property="og:updated_time" content="2018-01-20T00:59:07.972Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes">
 <meta name="twitter:description" content="この記事は，論文のうち，必要な部分を抜粋し和訳したものです。 The Winternitz One-Time Signature Scheme このセクションではW-OTS\(^+\)について書きます。W-OTSのコアとなるアイデアは，ランダムな入力から始まる特定の数の関数の連鎖を使用することです。これらのランダムな入力は秘密鍵です。公開鍵は連鎖の最終の出力，つまり，連鎖の最後から構成されます">
@@ -245,15 +245,15 @@ l_1 = \left\lceil \frac{m}{\text{log}(w)} \right\rceil,
 l_2 = \left\lfloor \frac{\text{log}(l_1(w-1))}{\text{log}(w)} \right\rfloor + 1,
 \,\,\,
 l = l_1 + l_2
-\]</span> さらに，W-OTS<span class="math inline">\(^+\)</span>は鍵空間<span class="math inline">\(\mathcal{K}_n\)</span>で関数の族<span class="math inline">\(\mathcal{F}_n\,\,\{f_k:\{0,1\}^n \to \{0,1\}^n| k\in \mathbb{K}_n \}\)</span>を使用します。読者は，圧縮無しの暗号学的なハッシュ関数だと考えてもらって大丈夫です。 <span class="math inline">\(\mathcal{F}_n\)</span>を使って，次の連鎖関数を定義します。 <br> <br> <span class="math inline">\(c^i_k(x,\textbf{r})\)</span>：入力値<span class="math inline">\(x\in \{0,1\}^n\)</span>，イテレーションカウンタ<span class="math inline">\(i\in \mathbb{N}\)</span>，鍵<span class="math inline">\(k\in \mathcal{K}\)</span>，ランダム化要素<span class="math inline">\(\textbf{r}=(r_1,...,r_j)\in \{0,1 \}^{n\times j}(j\geq i)\)</span>とすると， 連鎖関数は次のように働きます。<span class="math inline">\(i=0\)</span>のとき，<span class="math inline">\(c\)</span>は<span class="math inline">\(x\)</span>を返します(<span class="math inline">\(c^0_k(x,\textbf{r},x)\)</span>)。<span class="math inline">\(i&gt;0\)</span>のとき，再帰的に定義します。 <span class="math display">\[
+\]</span> さらに，W-OTS<span class="math inline">\(^+\)</span>は鍵空間<span class="math inline">\(\mathcal{K}_n\)</span>で関数の族<span class="math inline">\(\mathcal{F}_n\,\,\{f_k:\{0,1\}^n \to \{0,1\}^n| k\in \mathbb{K}_n \}\)</span>を使用します。読者は，圧縮無しの暗号学的なハッシュ関数だと考えてもらって大丈夫です。 <span class="math inline">\(\mathcal{F}_n\)</span>を使って，次の連鎖関数を定義します。 <br> <br> <span class="math inline">\(c^i_k(x,\textbf{r})\)</span>：入力値<span class="math inline">\(x\in \{0,1\}^n\)</span>，イテレーションカウンタ<span class="math inline">\(i\in \mathbb{N}\)</span>，鍵<span class="math inline">\(k\in \mathcal{K}\)</span>，ランダム化要素<span class="math inline">\(\textbf{r}=(r_1,...,r_j)\in \{0,1 \}^{n\times j}(j\geq i)\)</span>とすると， 連鎖関数は次のように働きます。<span class="math inline">\(i=0\)</span>のとき，<span class="math inline">\(c\)</span>は<span class="math inline">\(x\)</span>を返します(<span class="math inline">\(c^0_k(x,\textbf{r})=x\)</span>)。<span class="math inline">\(i&gt;0\)</span>のとき，再帰的に定義します。 <span class="math display">\[
 c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
 \]</span> つまり，各ラウンドで，関数は最初に中間値とビットマスク<span class="math inline">\(r\)</span>のビットごとのXORをとり， その結果に対して<span class="math inline">\(f_k\)</span>を評価します。の部分集合<span class="math inline">\(r_a,...,r_b\)</span>として，<span class="math inline">\(\textbf{r}_a,b\)</span>を書きます。<span class="math inline">\(b&lt;a\)</span>の場合<span class="math inline">\(\textbf{r}_{a,b}\)</span>をからの文字列と定義します。パラメータ<span class="math inline">\(m\)</span>，<span class="math inline">\(w\)</span>，そして関数の族<span class="math inline">\(\mathcal{F}_n\)</span>は既知であると仮定します。さて，W-OTS<span class="math inline">\(^+\)</span>の三つのアルゴリズムについて記載します： <br> <br> - <span class="math inline">\(\textit{鍵生成アルゴリズム}\,\,\,\,\,\)</span> (Kg(<span class="math inline">\(1^n\)</span>))：<br> 単項のセキュリティパラメータ<span class="math inline">\(n\)</span>を入力として，鍵生成アルゴリズムは<span class="math inline">\(l+w-1\)</span>個の<span class="math inline">\(n\)</span>ビットの文字列をランダムに一様に選択します。秘密鍵<span class="math inline">\(\textbf{sk}=(\text{sk}_1,...,\text{sk}_l)\)</span>は，最初の<span class="math inline">\(l\)</span>個のランダムなビット列から構成されています。残りの<span class="math inline">\(w-1\)</span>個のビット列は，<span class="math inline">\(c\)</span>のためのランダム化要素<span class="math inline">\(\textbf{r}=(r_1,...,r_{w-1})\)</span>として使用されます。次に，<span class="math inline">\(\text{Kg}\)</span>はランダムに一様にファンクションキー<span class="math inline">\(k \overset{\$}{\gets} \mathcal{K}\)</span>を選択します。公開検証鍵<span class="math inline">\(\textbf{pk}\)</span>は次のように計算されます。 <span class="math display">\[
     \text{pk} = (\text{pk}_0,\text{pk}_1,...,\text{pk}_l) =
-    ( (\textbf{r},k), c^{w-1}_k (\text{sk}_1,\textbf{r}) , \cdots,c^{w-1}_k (\text{sk}_l),\textbf{r} ). 
+    ( (\textbf{r},k), c^{w-1}_k (\text{sk}_1,\textbf{r}) , \cdots,c^{w-1}_k (\text{sk}_l,\textbf{r}) ). 
 \]</span> <br> <br> - <span class="math inline">\(\textit{署名アルゴリズム}\,\,\,\,\,\)</span> (Sign(<span class="math inline">\(M\)</span>,sk,))：<br> <span class="math inline">\(m\)</span>ビットのメッセージ<span class="math inline">\(M\)</span>，秘密署名鍵<span class="math inline">\(\textbf{sk}\)</span>およびランダム化要素<span class="math inline">\(\textbf{r}\)</span>を入力として，署名アルゴリズムはまず，<span class="math inline">\(M\)</span>の<span class="math inline">\(w\)</span>基底表現を計算します：<span class="math inline">\(M=(M_1...M_{l_1}) \,\,,\,\, M_i \in \{0,...,w-1 \}\)</span>。したがって，<span class="math inline">\(M\)</span>は自然数<span class="math inline">\(x\)</span>のバイナリ表現として扱われ，次に<span class="math inline">\(x\)</span>の<span class="math inline">\(w\)</span>変数表現が計算されます。<br> 次にチェックサムを以下のように計算します。 <span class="math display">\[
     C = \sum^{l_1}_{i=1}(w-1-M_i)
 \]</span> そして，その<span class="math inline">\(w\)</span>基底表現<span class="math inline">\(C=(C_1,...,C_{l_2})\)</span>を計算します。<span class="math inline">\(C \leq l_1(w-1)\)</span>より，<span class="math inline">\(C\)</span>の<span class="math inline">\(w\)</span>基底表現は，たかだか<span class="math inline">\(l_2\)</span>です。 <span class="math inline">\(M\)</span>と<span class="math inline">\(C\)</span>の<span class="math inline">\(w\)</span>基底表現の連結である<span class="math inline">\(B=(b_1,...,b_l)=M\,\,||\,\,C\)</span>を設定します。 署名は次のように計算されます。 <span class="math display">\[
-\sigma = (\sigma_1,...,\sigma_l) = (c^{b_1}_k(\text{sk}_1,\textbf{r},...,c^{b_l}_k(\text{sk}_l),\textbf{r})).
+\sigma = (\sigma_1,...,\sigma_l) = (c^{b_1}_k(\text{sk}_1,\textbf{r}),...,c^{b_l}_k(\text{sk}_l,\textbf{r})).
 \]</span> チェックサムは，ある一つのメッセージに対応した<span class="math inline">\(b_i,0 &lt; i \leq l\)</span>が与えられたとき， 任意の他のメッセージに対応する<span class="math inline">\(b&#39;_{i} &lt; b_i\)</span>が少なくとも一つあることを保証することに留意してください。 <br> <br> - <span class="math inline">\(\textit{検証アルゴリズム}\,\,\,\,\,\)</span> (Vf(<span class="math inline">\(1^n\)</span>,<span class="math inline">\(M\)</span>,<span class="math inline">\(\sigma\)</span>,))：<br> バイナリ長<span class="math inline">\(m\)</span>のメッセージ<span class="math inline">\(M\)</span>，署名<span class="math inline">\(\sigma\)</span>，そして公開検証鍵<span class="math inline">\(\textbf{pk}\)</span>を入力として， 検証アルゴリズムは，上述したようにまず<span class="math inline">\(b_i,1\leq i \leq l\)</span>を計算します。 それから以下のように比較されます。
 <span class="math display">\[\begin{align}
     \textbf{pk}
@@ -288,7 +288,8 @@ c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/26/intro-adviser/" data-tooltip="Introducing Robby Dermody, QRL Adviser(日本語訳)" aria-label="前: Introducing Robby Dermody, QRL Adviser(日本語訳)">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前</span>
@@ -307,7 +308,7 @@ c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -341,7 +342,7 @@ c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>
@@ -373,7 +374,8 @@ c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/26/intro-adviser/" data-tooltip="Introducing Robby Dermody, QRL Adviser(日本語訳)" aria-label="前: Introducing Robby Dermody, QRL Adviser(日本語訳)">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前</span>
@@ -392,7 +394,7 @@ c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
     </nav>
     <ul class="post-actions post-action-share">
         <li class="post-action hide-lg hide-md hide-sm">
-            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
                 <i class="fa fa-share-alt" aria-hidden="true"></i>
             </a>
         </li>
@@ -426,7 +428,7 @@ c^i_k(x,\textbf{r}) = f_k(c^{i-1}_k(x,\textbf{r})\oplus r_i)
         
         <li class="post-action">
             
-                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
             
                 <i class="fa fa-list" aria-hidden="true"></i>
             </a>

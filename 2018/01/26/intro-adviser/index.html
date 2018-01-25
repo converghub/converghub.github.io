@@ -6,25 +6,25 @@
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Nest of Owl">
-    <title>ハッシュベース署名方式（１）　One-time Signatures - Nest of Owl</title>
+    <title>Introducing Robby Dermody, QRL Adviser(日本語訳) - Nest of Owl</title>
     <meta name="author" content="Owl">
     
     
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <meta name="description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
-<meta name="keywords" content="署名方式">
+    <meta name="description" content="先週，私はRobbyと膝を交えて，QRLコミュニティに紹介するのにいくつかの質問をしました。私たちは，顧問的な役割でプロジェクトにRobbyが加わることに非常に興奮しており，暗号通貨界隈における豊富な経験から学ぶことを非常に楽しみにしています。Robbyは彼の洞察力を私たちに提供してくれ，また，彼が経験してきたこともふまえて私たちを助けてくれます。 QRL：Robby，バックグラウンドはなんでし">
+<meta name="keywords" content="QRL">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="ハッシュベース署名方式（１）　One-time Signatures">
-<meta property="og:url" content="https://converghub.github.io/2018/01/12/hash-based-signatures-1/index.html">
+<meta property="og:title" content="Introducing Robby Dermody, QRL Adviser(日本語訳)">
+<meta property="og:url" content="https://converghub.github.io/2018/01/26/intro-adviser/index.html">
 <meta property="og:site_name" content="Nest of Owl">
-<meta property="og:description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
+<meta property="og:description" content="先週，私はRobbyと膝を交えて，QRLコミュニティに紹介するのにいくつかの質問をしました。私たちは，顧問的な役割でプロジェクトにRobbyが加わることに非常に興奮しており，暗号通貨界隈における豊富な経験から学ぶことを非常に楽しみにしています。Robbyは彼の洞察力を私たちに提供してくれ，また，彼が経験してきたこともふまえて私たちを助けてくれます。 QRL：Robby，バックグラウンドはなんでし">
 <meta property="og:locale" content="ja">
-<meta property="og:updated_time" content="2018-01-17T03:05:55.151Z">
+<meta property="og:updated_time" content="2018-01-25T23:44:50.808Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ハッシュベース署名方式（１）　One-time Signatures">
-<meta name="twitter:description" content="Lamport 1979年の10月18日にLeslie Lamportによってワンタイム署名のコンセプトが発表された。 ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。    公開鍵 $ h(x)|h(y)$   秘密鍵 $">
+<meta name="twitter:title" content="Introducing Robby Dermody, QRL Adviser(日本語訳)">
+<meta name="twitter:description" content="先週，私はRobbyと膝を交えて，QRLコミュニティに紹介するのにいくつかの質問をしました。私たちは，顧問的な役割でプロジェクトにRobbyが加わることに非常に興奮しており，暗号通貨界隈における豊富な経験から学ぶことを非常に楽しみにしています。Robbyは彼の洞察力を私たちに提供してくれ，また，彼が経験してきたこともふまえて私たちを助けてくれます。 QRL：Robby，バックグラウンドはなんでし">
     
     
         
@@ -193,14 +193,14 @@
         <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title" itemprop="headline">
-            ハッシュベース署名方式（１）　One-time Signatures
+            Introducing Robby Dermody, QRL Adviser(日本語訳)
         </h1>
     
     
         <div class="post-meta">
-    <time itemprop="datePublished" datetime="2018-01-12T17:19:52+09:00">
+    <time itemprop="datePublished" datetime="2018-01-26T07:13:43+09:00">
 	
-		    2018/01/12
+		    2018/01/26
     	
     </time>
     
@@ -217,58 +217,8 @@
     
     <div class="post-content markdown" itemprop="articleBody">
         <div class="main-content-wrap">
-            <h1 id="lamport"><a href="https://www.microsoft.com/en-us/research/publication/constructing-digital-signatures-one-way-function/?from=http%3A%2F%2Fresearch.microsoft.com%2Fen-us%2Fum%2Fpeople%2Flamport%2Fpubs%2Fdig-sig.pdf" target="_blank" rel="noopener">Lamport</a></h1>
-<p>1979年の10月18日にLeslie Lamportによって<b>ワンタイム署名</b>のコンセプトが発表された。</p>
-<p>ほとんどの署名スキームはそのセキュリティの証明に，部分的に一方向性関数，典型的なハッシュ関数に頼っています。ランポート署名の美しさは，この署名がこれらの一方向性関数のセキュリティにだけ頼っているところ。</p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="center">公開鍵</td>
-<td align="center">$ h(x)|h(y)$</td>
-</tr>
-<tr class="even">
-<td align="center">秘密鍵</td>
-<td align="center">$ (x,y) $</td>
-</tr>
-</tbody>
-</table>
-<p>とても単純なスキームとして，<span class="math inline">\(x\)</span>，<span class="math inline">\(y\)</span>を整数とすると，単一のビットへの署名は， <br> - もし0なら，<span class="math inline">\(x\)</span>を公開する<br> - もし1なら，<span class="math inline">\(y\)</span>を公開する</p>
-<p>それを2度と署名に使わないこと。 もし複数のビットに署名したい場合はどうすればいいか？ できることは，署名したいメッセージを固定長の出力となるようにハッシング することです。例えば，SHA-256など。</p>
-<p>そのとき，256個の秘密鍵のペアが必要になって，次のようになる。<br></p>
-<table>
-<tbody>
-<tr class="odd">
-<td align="center">公開鍵</td>
-<td align="center">$ h(x_0)|h(x_0), h(x_1)|h(x_2),...,h(x_{255}) | h(y_{255})$</td>
-</tr>
-<tr class="even">
-<td align="center">秘密鍵</td>
-<td align="center">$ (x_0,y_0),(x_1,y_1),...,(x_{255},y_{255}) $</td>
-</tr>
-</tbody>
-</table>
-<p>そしてもし，<span class="math inline">\(100110_2....\)</span>に署名したい場合は，<span class="math inline">\((y_0,x_1,x_2,y_3,y_4,x_5,...)\)</span>というように公開する。</p>
-<p>詳細は，<a href="https://qiita.com/onokatio/items/689965fa484d40d851ce" target="_blank" rel="noopener">Qiita</a>にも取り上げられているので，そちらに譲る。</p>
-<h1 id="winternitz-ots-wots">Winternitz OTS (WOTS)</h1>
-<p>Lamportの発表から数か月あと，スタンフォードの数学学科のRobert Winternitzが，<span class="math inline">\(h(x)|h(y)\)</span>の公開の代わりに<span class="math inline">\(h^w(x)\)</span>を公開することを提案した。</p>
-<p>例えば，<span class="math inline">\(w=16\)</span>として<span class="math inline">\(h^{16}(x)\)</span>を公開鍵として公開する場合，<span class="math inline">\(x\)</span>は秘密鍵。次のバイナリ<span class="math inline">\(1101_2\)</span>に署名したい場合，<span class="math inline">\(h^9(x)\)</span>を公開すればいい。</p>
-<p>問題は，悪意のある人間が<span class="math inline">\(h^{10}(x)\)</span>を検索するために，この署名とハッシュを見られることで，それゆえ有効な署名を偽造しうること。</p>
-<p>これはメッセージの後ろに短いチェックサム（同様に署名する必要がある）を追加することで回避可能。</p>
-<h1 id="variant-of-winternitz-ots"><a href="https://eprint.iacr.org/2011/191.pdf" target="_blank" rel="noopener">Variant of Winternitz OTS</a></h1>
-<p>長い長い年月のあと，2011年に，Buchmann et alがWinternitz OTSのアップデートを公開して，鍵でパラメータ化された族を利用して新しいWOTSの変種を紹介した。MACと呼ばれている。</p>
-<p>MACで使用される鍵のリストが秘密鍵で，メッセージは何度MACを反復するかを指定することになる。以前の出力が鍵を置き換えるため固有の反復であり，常に同じ公開された入力を使用する。</p>
-<p>メッセージ<span class="math inline">\(M=1011_2\)</span>があり，WOTSの変種が3を基底とするメッセージとして動作するとする（実際には任意の基底<span class="math inline">\(w\)</span>でも大丈夫）。<span class="math inline">\(M=(M_0,M_1,M_2)=(1,0,2)\)</span>は<span class="math inline">\(102_3\)</span>を表すとする。</p>
-<p>これを署名するには，<span class="math inline">\((f^1_{sk_1}(x)=f_{sk_1}(x),\, f^0_{sk_2}(x)=sk_2 ,\, f^2_{sk_3}(x)=f_{\{f^1_{sk_3(x)}\}}(x) )\)</span>を公開すればいい。</p>
-<p>まだメッセージに署名が必要なチェックサムが適用されるが，詳細割愛。 チェックサムにより，公開鍵の中で<span class="math inline">\(M_2=2\)</span>と知られていても関係がない。</p>
-<p>直感的に，連鎖していくことで公開鍵により良いセキュリティを提供することになる。</p>
-<h1 id="winternitz-otswots"><a href="https://huelsing.files.wordpress.com/2013/05/wotsspr.pdf" target="_blank" rel="noopener">Winternitz OTS+(WOTS+)</a></h1>
-<p>変種の発表の2年後，Hulsingだけで，署名サイズを短くし，以前のスキームのセキュリティを向上させるアップグレード版を公開した。これは，鍵付き関数族に加えて，連鎖関数を使用する。今度は，鍵は常に同じで，それは一つ前の出力が入力となる。また，一方向性関数が適用される前にランダム値（またはマスク）がXORされる。</p>
-<p>入力<span class="math inline">\(x \in \{0, 1\}^n\)</span>，反復カウンタ<span class="math inline">\(i\in \mathbb{N}\)</span>，ランダム要素<span class="math inline">\(\bf{r}\)</span><span class="math inline">\(=(r_1,...,r_j) \in \{0,1\}^{n\times j}(j\geq i)\)</span>とすると，連鎖関数は次のように働く。<br> <span class="math inline">\(i=0\)</span>のとき，連鎖関数<span class="math inline">\(c\)</span>は<span class="math inline">\(x\)</span>を返す<span class="math inline">\((c_k^0(x,\textbf{r})=x)\)</span>。<br> <span class="math inline">\(i&gt;0\)</span>のとき，連鎖関数<span class="math inline">\(c\)</span>は再帰的に次のようになる。 <span class="math display">\[
-c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
-\]</span> <span class="math inline">\(f_k\)</span>について，鍵空間<span class="math inline">\({\cal K}_n\)</span>とすると，関数族<span class="math inline">\({\cal F}_n:\{f_k : \{0,1\}^{n} \to \{0,1\}^{n} | \,\, k\in {\cal K}_n \}\)</span>を満たす。<br> 要は，圧縮なしの暗号学的なハッシュ関数。</p>
-<h1 id="その他のotsについて">その他のOTSについて</h1>
-<p>他にもいろいろ提案されている。<br> - 1994，<a href="ftp://ftp.inf.ethz.ch/pub/crypto/publications/BleMau94.pdf" target="_blank" rel="noopener">The Bleichenbacher-Maurer OTS</a><br> - 2001，<a href="http://www.netsec.ethz.ch/publications/papers/biba.pdf" target="_blank" rel="noopener">The BiBa OTS</a><br> - 2002，<a href="https://www.cs.bu.edu/~reyzin/papers/one-time-sigs.pdf" target="_blank" rel="noopener">HORS</a><br> - 2014，<a href="https://cryptojedi.org/papers/sphincs-20141001.pdf" target="_blank" rel="noopener">HORST, SPHINCS</a><br></p>
-<p><a href="http://pqcrypto.eu.org/docs/initial-recommendations.pdf" target="_blank" rel="noopener">PQCRYPTO ICT-645622</a>によると，耐量子として，公開鍵署名に推奨されているものは，XMSSとSPHINCS-256。<br> （XMSSはステートフル署名，SPHINCSはステートレス署名）</p>
+            <p>先週，私はRobbyと膝を交えて，QRLコミュニティに紹介するのにいくつかの質問をしました。私たちは，顧問的な役割でプロジェクトにRobbyが加わることに非常に興奮しており，暗号通貨界隈における豊富な経験から学ぶことを非常に楽しみにしています。Robbyは彼の洞察力を私たちに提供してくれ，また，彼が経験してきたこともふまえて私たちを助けてくれます。</p>
+<p><b>QRL</b>：Robby，バックグラウンドはなんでしょうか？何の出身でしょうか？ <br> <br> <b>Robby</b>：えっと，私は起業家としての専門的な背景がありますが，職業的にはソフトウェア開発者です。私はエンタープライズソフトウェア，VoIP(Voice Over Internet Protocol，ボイップ)ソリューション，デジタル信号処理に携わっていました。 <br> <br> <b>QRL</b>：ソフトウェア開発者としての自分をどのように見出しましたか？ <br> <br> <b>Robby</b>：私は計算機科学の学校に行きましたが，私は主に独学のコーダーです。私は9歳ごろからプログラミングを始めましたので，私の生涯にわたる情熱なものでした。 <br> <br> <b>QRL</b>：9歳から？本当に？ <br> <br> <b>Robby</b>：ええ，私は第4学年で&quot;Bring a Book to School Day（学校での読書）&quot;のためにMS-DOSのマニュアルを持ってきたギークな子供でした。成長すると，コンピュータはしばしば私の同僚よりも意味のあるものでした。 <br> <br> <b>QRL</b>：おお，確かにあなたはテクノロジーの人生のために運命づけられたようですね。暗号通貨／ブロックチェーンについて，どうやって知ったのでしょうか？ <br> <br> <b>Robby</b>：私がブロックチェーンと暗号通貨を知ったのは2012年でした。私の興味をそそる多くのことがあり，私が調査を始めたとき，情報過負荷に陥ってしまったので，まず最初に<a href="https://www.feathercoin.com/" target="_blank" rel="noopener">Feathercoin</a>のマイニングを始めました。それが機能レベルでどのように機能しているかを見て楽しみました。 <br> <br> <b>QRL</b>：何があなたを次のステップに踏み出させたんでしょうか？ <br> <br> <b>Robby</b>：2013年8月上旬，私は<a href="https://en.wikipedia.org/wiki/Omni_Layer" target="_blank" rel="noopener">Master Coin</a>に関するCoinDeskの記事を読みました。Bitcoinのブロックチェーンにデータを埋め込むという新しい概念について，彼らはその機能を拡張することについて話していましたが，すぐに興味深いと思いました。Mastercoinは事実上初めてのICOでしたが，「ICO」という用語は当時使用されていませんでした。Mastercoinは私の想像力を燃やしてしまい，すぐにMastercoinコミュニティの活発な部分に自分自身がいることに気づきました。実際に，<a href="https://counterparty.io/" target="_blank" rel="noopener">CounterParty</a>を設立した2人の他の人は，私自身と一緒に，Mastercoinの初期投資家とコミュニティメンバーでした。 <br> <br> <b>QRL</b>：Mastercoinへの投資から数か月後に，どのようにしてCounterPartyで独自の暗号通貨の開発を始めたのでしょうか？ <br> <br> <b>Robby</b>：私たち（他のCounterParty創設者と私）は，Mastercoinには変更や改良ができると思っていましたが，結局のところ，ほかの多くの人たちと同じように，この欲望を明かしたいと思っていました。カウンターパーティのXCPトークンをコミュニティに配布するために，Proof-of-Burn方式を使用することは，今日ではほとんど非現実的な，イデオロギー的な姿勢をとっていました。 <br><br> <a href="https://counterparty.io/news/why-proof-of-burn/" target="_blank" rel="noopener">Proof of Burn</a>では，人々は自分のBTCを復旧不能なアドレスに送信し，プロトコルはそれを確認して，対応する量のトークンが与えられます。この方法で，2,000BTC以上が失われ，約260万XCPが生成されました。明らかな欠点はすべてをブートストラップしなければならなかったことです。しかし，それはまた，小さく非常に効率的なコアチームととても専門的なコアコミュニティであることを意味します。また，2014年1月2日のローンチ日に，基本的に完全に機能するすべてのソフトウェアをリリースしました。約束や事前告知は必要ありませんでした。このうちのいくつかは，多くの人々が振り返ってみれば奇妙に思えるかもしれませんが，非常に面白い実験であり，多くの楽しみでもあります。 <br> <br> <b>QRL</b>：少しだけ巻きましょう。どうやってQRLと出会ったのでしょうか？ <br> <br> <b>Robby</b>：QRLと無関係のスレッドをbitcointalkで見ていたのですが，QRLに言及するコメントを目にしました—量子計算と暗号についての問題に取り組んでいるというコメントでした。だから私はホワイトペーパーを見ました，4月ごろだと思います。実行可能な量子コンピュータは，まだ先の話ですが，その分野には多額の資金と関心があります。そして実質的にすべての暗号化通信で使用される暗号化署名方式を含め，今日取り上げられている技術の多くを脅かす可能性のある，急進的な突破口の可能性が常にあります。 <br><br> だから私は部分的にエキサイティングなヘッジとしてプロジェクトを見ました。私はプロジェクトの3つの重要な要素が好きです—1つ目は，ファンダメンタルです。このホワイトペーパーは，実際にプロジェクトを支える技術的／数学的問題の多くを扱っていました。2つ目は，合理的なAskです。基本的なアプリケーションを作るために1億ドルも求めていませんでした。これは400万ドルで，合理的な人件費と営業支出に則していました。3つ目は，私がPeterとJPに直接接触して，彼らとやり取りしたとき，私は彼らが誠実で本気であるとわかりました。それはプレセール中の2017年5月頃でした。 <br> <br> <b>QRL</b>：プロジェクトの寿命に関して何らかの最初の懸念はありましたか？ <br> <br> <b>Robby</b>：私が最初にQRLを知ったとき，チームはまだ小さかったです。おそらく，チームがあまりにも急速に拡大するか，あるいは十分に急速に拡大しないであろうし，獲得した才能が目の前の作業負荷を処理できない可能性があることを心配しました。PeterとJPは医師であり，職業的には起業家やソフトウェア開発者ではありませんでした。しかし，彼らは非常に賢明で意欲的であるように思えました。そしてチームメンバーの数が増え，開発の進展が見られたので，これらの懸念が緩和されました。 <br> <br> <b>QRL</b>：私たちのコミュニティに何かコメントはあるでしょうか？ <br> <br> <b>Robby</b>：このような長期的な焦点を当てた技術に興味を持つコミュニティを見ることは本当に素晴らしいことです。選択した道のりに自信を持ってください。成功のために最も重要な要素は，チーム，ビジョン，コード，そしてこのプロジェクトが目指す方向にすでに存在しています。 <br><br> それらを背景に，QRLはプロフェッショナルでナンセンスではないプロジェクトとして，すでに少しの評判を得ています。これは，暗号通貨界隈が成熟し続けており，実際にはそれほど価値のないプロジェクトが明らかになっていくため，今後数か月数年間でQRLに対してうまく機能することでしょう。最後にコミュニティに私を大手を拡げて歓迎してくれてありがとうと言いたいと思います！のちに私はDiscordにいることになりましたが，そこでの議論や交流の質は素晴らしいです。 <br> <br> ※翻訳は以上になります。</p>
 
             
 
@@ -279,7 +229,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">タグ</span><br/>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/署名方式/">署名方式</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/QRL/">QRL</a>
 
             </div>
         
@@ -289,8 +239,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/17/hash-based-signatures-2/" data-tooltip="ハッシュベース署名方式（２）　Few-times Signatures" aria-label="前: ハッシュベース署名方式（２）　Few-times Signatures">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前</span>
@@ -299,7 +248,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Get-ready-for-qrl-launch-ja/" data-tooltip="Get ready for QRL launch! (日本語訳)" aria-label="次: Get ready for QRL launch! (日本語訳)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/18/wots-jp/" data-tooltip="W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes" aria-label="次: W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">次</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -317,7 +266,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Facebookで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/26/intro-adviser/" title="Facebookで共有">
                     <i class="fa fa-facebook-official" aria-hidden="true"></i>
                 </a>
             </li>
@@ -325,7 +274,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Twitterで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/26/intro-adviser/" title="Twitterで共有">
                     <i class="fa fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -333,7 +282,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Google+で共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/26/intro-adviser/" title="Google+で共有">
                     <i class="fa fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -375,8 +324,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/17/hash-based-signatures-2/" data-tooltip="ハッシュベース署名方式（２）　Few-times Signatures" aria-label="前: ハッシュベース署名方式（２）　Few-times Signatures">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">前</span>
@@ -385,7 +333,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             <li class="post-action">
                 
                     
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Get-ready-for-qrl-launch-ja/" data-tooltip="Get ready for QRL launch! (日本語訳)" aria-label="次: Get ready for QRL launch! (日本語訳)">
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/18/wots-jp/" data-tooltip="W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes" aria-label="次: W-OTS+ — Shorter Signatures for Hash-Based Signature Schemes">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">次</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -403,7 +351,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Facebookで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/26/intro-adviser/" title="Facebookで共有">
                     <i class="fa fa-facebook-official" aria-hidden="true"></i>
                 </a>
             </li>
@@ -411,7 +359,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Twitterで共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/26/intro-adviser/" title="Twitterで共有">
                     <i class="fa fa-twitter" aria-hidden="true"></i>
                 </a>
             </li>
@@ -419,7 +367,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/12/hash-based-signatures-1/" title="Google+で共有">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/26/intro-adviser/" title="Google+で共有">
                     <i class="fa fa-google-plus" aria-hidden="true"></i>
                 </a>
             </li>
@@ -446,7 +394,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/12/hash-based-signatures-1/">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://converghub.github.io/2018/01/26/intro-adviser/">
                     <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Facebookで共有</span>
                 </a>
             </li>
@@ -454,7 +402,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/12/hash-based-signatures-1/">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https://converghub.github.io/2018/01/26/intro-adviser/">
                     <i class="fa fa-twitter" aria-hidden="true"></i><span>Twitterで共有</span>
                 </a>
             </li>
@@ -462,7 +410,7 @@ c_k^i(x,\textbf{r}) = f_k(c_k^{i-1}(x,\textbf{r}) \oplus r_i)
             
             
             <li class="share-option">
-                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/12/hash-based-signatures-1/">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https://converghub.github.io/2018/01/26/intro-adviser/">
                     <i class="fa fa-google-plus" aria-hidden="true"></i><span>Google+で共有</span>
                 </a>
             </li>
